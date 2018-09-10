@@ -1,0 +1,1 @@
+kendo.ui.Grid.prototype.options.messages.commands.create = "New";

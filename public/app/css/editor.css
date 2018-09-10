@@ -1,0 +1,19 @@
+.floatNone {
+    margin: 0;
+    display: inline-block;
+    float: none;
+}
+
+.floatLeft {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+    float: left;
+}
+
+.floatRight {
+    margin-left: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+    float: right;
+}
