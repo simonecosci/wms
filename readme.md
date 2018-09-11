@@ -19,3 +19,31 @@ The Kendo-UI framework is commercial software licensed (https://www.telerik.com/
 
 ## Installation
 
+```
+composer create-project simonecosci/wms 
+cd wms
+npm install
+```
+## Database
+Creata a new database
+```
+mysql -uroot -p
+mysql> create database yourDatabaseName;
+```
+
+Then cp .env.example .env and update your database creds.
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=wms
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+run the migrations with seed
+```
+php artisan migrate:fresh --seed
+```
+
+
