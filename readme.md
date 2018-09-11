@@ -5,7 +5,7 @@
 
 ## About WMS
 
-WMS has been build on top of Laravel by exending some funzionalities and using kendo-ui as frontend javascript framework.
+WMS has been built on top of the Laravel by extending some funzionalities and using kendo-ui as frontend javascript framework.
 Using this software requires a commercial license of Kendo UI
 
 - [Laravel](https://laravel.com/docs/5.6).
