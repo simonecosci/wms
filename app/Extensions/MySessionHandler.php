@@ -6,7 +6,6 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Session\DatabaseSessionHandler;
 use Illuminate\Support\Facades\DB;
-use Carbon;
 
 class MySessionHandler extends DatabaseSessionHandler {
 
@@ -22,17 +21,8 @@ class MySessionHandler extends DatabaseSessionHandler {
                 ->get()
         ;
         foreach ($sessions as $session) {
-            $this->clearCart($session->id);
             DB::table('sessions')->where('id', $session->id)->delete();
         }
-    }
-
-    public function clearCart($sessionId) {
-        DB::table('cart_rows')
-                ->where('session_id', $sessionId)
-                ->whereNull('customer_id')
-                ->delete()
-        ;
     }
 
     /**

@@ -1,18 +1,71 @@
 //<script>
+
+/*!
+ * jQuery Kendo JavaScript Library v3
+ *
+ * Released under the MIT license
+ * Copyright (c) 2018 Simone Cosci
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 /**
  * @package Application
  * @version 3.0
  * @author Simone Cosci <simone.cosci@gmail.com>
  * @copyright Copyright 2018
  * @abstract
- *
  * */
+
+/*
+ * 
+ * @param object $
+ * @param object window
+ * @param undefined
+ * @returns function
+ */
+
 (function (/*object*/ $, /*object*/window, /*undefined*/undefined) {
 
     var Application,
             extend = $.extend,
             kendo = window.kendo,
-            storage = window.localStorage || null,
+            kendoVersion = "2018.2.620",
+            storage = {
+                data: {},
+                getItem: function (key) {
+                    return this.data[key];
+                },
+                setItem: function (key, value) {
+                    this.data[key] = value;
+                },
+                removeItem: function (key) {
+                    delete this.data[key];
+                },
+                load: function () {
+                    return {
+                        dane: function(cb) {
+                            cb.call();
+                        }
+                    }
+                }
+            },
             doc = window.document,
             keysOf = Object.keys,
             animation = {
@@ -37,11 +90,10 @@
                 })(),
                 pushState: ("pushState" in window.history)
             };
-
     /**
      * Default ajax config
      */
-    $.ajaxSetup({
+    var ajaxSetup = {
         cache: false,
         onError: function (message, title) {
             try {
@@ -92,7 +144,17 @@
                 this.onError(message, title);
             }
         }
-    });
+    };
+    var ajaxSetupSilent = {
+        onError: function () {            
+        },
+        statusCode: {
+            401: function (e) {},
+            404: function (e) {},
+            500: function (e) {}
+        }
+    };
+    $.ajaxSetup(ajaxSetup);
 
     /**
      * Application static class
@@ -101,7 +163,7 @@
         /**
          * @param string version
          */
-        version: "3.0",
+        version: "3.0.0",
         /**         * @param string dataType
          */
         dataType: "json",
@@ -2260,8 +2322,6 @@
                         e.sender.wrapper.addClass("main-window");
                         e.sender.trigger("resize");
                     }
-                    if (!Application.storage.getItem)
-                        return;
                     var ss = Application.storage.getItem("savestate");
                     if (ss > 0) {
                         var controller = e.sender.options.controllerName;
@@ -2317,45 +2377,87 @@
                 }
             },
             changeCulture: function (culture) {
-                Application.ui.culture = culture
+                if (Application.ui.culture === culture) {
+                    return;
+                }
                 var after = function () {
-                    $.getScript("/js/cultures/kendo.culture." + culture + ".min.js").done(function () {
-                        $("head script.culture").attr("src", "/js/cultures/kendo.culture." + culture + ".min.js");
+                    var done = function (url) {
+                        $("head script.culture").attr("src", url);
                         Application.ui.culture = culture;
                         kendo.culture(culture);
+                    };
+                    $.ajaxSetup(ajaxSetupSilent);
+                    var url = "/js/cultures/kendo.culture." + culture + ".min.js";
+                    $.getScript(url).done(function () {
+                        $.ajaxSetup(ajaxSetup);
+                        done(url);
+                    }).fail(function (jqxhr, settings, exception) {
+                        $.ajaxSetup(ajaxSetup);
+                        if (jqxhr.readyState !== 0) {
+                            url = "http://kendo.cdn.telerik.com/" + kendoVersion + url;
+                            $.getScript(url).done(function () {
+                                done(url);
+                            }).fail(function (jqxhr, settings, exception) {
+                                console.log(jqxhr, settings, exception);
+                                return alert("Error calling URL: ", url + "\n" + exception.toString());
+                            });
+                        } else {
+                            console.log(jqxhr, settings, exception);
+                            return alert("Error calling URL: ", url + "\n" + exception.toString());
+                        }
                     });
                 };
-                if (Application.storage.setItem) {
-                    return Application.storage.setItem("kendoCulture", culture).done(after);
-                }
+                var result = Application.storage.setItem("kendoCulture", culture);
+                if (result && result.done)
+                    return result.done(after);
                 after.call();
             },
             changeLanguage: function (language, then) {
-                Application.ui.language = language;
+                if (Application.ui.language === language) {
+                    return;
+                }
                 var after = function () {
                     var l = [
                         language,
                         (language === "en") ? 'GB' : language.toUpperCase()
                     ];
-                    $.getScript("/js/messages/kendo.messages." + l[0] + "-" + l[1] + ".min.js").done(function () {
-                        $("head script.language").attr("src", "/app/lang/lang." + language + ".js");
+                    var done = function (url) {
+                        $("head script.messages").attr("src", url);
                         $.getScript("/app/lang/lang." + language + ".js").done(function () {
                             $("head script.language").attr("src", "/app/lang/lang." + language + ".js");
                             Application.ui.language = language;
                             if ($.isFunction(then))
                                 then.call();
                         });
+                    };
+                    $.ajaxSetup(ajaxSetupSilent);
+                    var url = "/js/messages/kendo.messages." + l[0] + "-" + l[1] + ".min.js";
+                    $.getScript(url).done(function () {
+                        $.ajaxSetup(ajaxSetup);
+                        done(url);
+                    }).fail(function (jqxhr, settings, exception) {
+                        $.ajaxSetup(ajaxSetup);
+                        if (jqxhr.readyState !== 0) {
+                            url = "http://kendo.cdn.telerik.com/" + kendoVersion + url;
+                            $.getScript(url).done(function () {
+                                done(url);
+                            }).fail(function (jqxhr, settings, exception) {
+                                console.log(jqxhr, settings, exception);
+                                return alert("Error calling URL: ", url + "\n" + exception.toString());
+                            });
+                        } else {
+                            console.log(jqxhr, settings, exception);
+                            return alert("Error calling URL: ", url + "\n" + exception.toString());
+                        }
                     });
                 };
-                if (Application.storage.setItem) {
-                    return Application.storage.setItem("kendoLanguage", language).done(after);
-                }
+                var result = Application.storage.setItem("kendoLanguage", language);
+                if (result && result.done)
+                    return result.done(after);
                 after.call();
             },
             changeBackgroundColor: function (color) {
-                if (Application.storage.setItem) {
-                    Application.storage.setItem("kendoBackgroundColor", color);
-                }
+                Application.storage.setItem("kendoBackgroundColor", color);
                 Application.ui.backgroundColor = color;
                 if (color === "" || color === "null" || color === null)
                     $("html").css("background-color", "none");
@@ -2365,9 +2467,7 @@
             },
             changeWallpaper: function (wallpaperName) {
                 //console.log("WALLPAPER CHANGED TO:", wallpaperName);
-                if (Application.storage.setItem) {
-                    Application.storage.setItem("kendoWallpaper", wallpaperName);
-                }
+                Application.storage.setItem("kendoWallpaper", wallpaperName);
                 Application.ui.wallpaper = wallpaperName;
                 if (wallpaperName === "" || wallpaperName === "null" || wallpaperName === null)
                     $("html").css("background-image", "none"); //"url(" + wallpaperName + ") no-repeat center center fixed");
@@ -2466,9 +2566,7 @@
                     if (Application.ui.theme.getThemeUrl(themeName) === Application.ui.theme.getCurrentThemeLink().attr("href")) {
                         return;
                     }
-                    if (Application.storage.setItem) {
-                        Application.storage.setItem("kendoSkin", themeName);
-                    }
+                    Application.storage.setItem("kendoSkin", themeName);
                     if (animate) {
                         Application.ui.theme.preloadStylesheet(Application.ui.theme.getThemeUrl(themeName), function () {
                             var body = $("body");
@@ -2772,7 +2870,7 @@
          * @return void
          */
         run: function () {
-            
+
             var kendoCulture = Application.storage.getItem("kendoCulture") || Application.ui.culture;
             Application.ui.changeCulture(kendoCulture);
 
@@ -2853,7 +2951,7 @@
                 $("body").css("visibility", "visible");
                 $(Application).trigger("ready");
             });
-
+            Application.initialized = true;
         },
         /**
          * Menu builder utils
@@ -3128,10 +3226,10 @@
                 var fields = model[what] ? JSON.parse(model[what]) : {};
                 var item = new kendo.data.ObservableObject(fields);
                 var t = "<tr><th><label for='#=what#.#=field#'>#=field#</label></th><td>#=input#</td></tr>";
-                
+
                 if (!order)
                     order = Object.keys(fields);
-                
+
                 for (var x = 0; x < order.length; x++) {
                     var input, field = order[x];
                     var template = kendo.template(t);
@@ -3180,7 +3278,7 @@
     Application.dataType = "json";
     Application.ui.skin = "blueopal";
     Application.ui.wallpaper = "";
-    Application.ui.culture = "it";
+    Application.ui.culture = "en-GB";
     Application.ui.language = "en";
     Application.ui.backgroundColor = "#ccc";
 

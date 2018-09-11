@@ -9,6 +9,8 @@
 
 <script type="text/javascript">
 
+    window.workers = {};
+
     function toggleFullScreen() {
         if (!document.fullscreenElement &&
                 !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
@@ -47,7 +49,7 @@
     }
 
     $(document).ready(function () {
-        
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -62,6 +64,10 @@
                 Name: "{{ $user->name }}",
                 Email: "{{ $user->email }}"
             };
+
+            if (window.Worker)
+                workers.userprefs = new Worker('/app/workers/user-prefs.js');
+
             $(app()).on("ready", function () {
 
                 var names = kendo.culture().calendars.standard.months.names;
@@ -102,6 +108,26 @@
                 setItem: function (key, value) {
                     this.data[key] = value;
                     var self = this;
+                    if (workers.userprefs) {
+                        workers.userprefs.postMessage(kendo.stringify({
+                            prefs: this.data,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        }));
+                        return {
+                            done: function (callback) {
+                                workers.userprefs.onmessage = function (event) {
+                                    try {
+                                        app().storage.data = JSON.parse(event.data);
+                                        callback.call();
+                                    } catch (ex) {
+                                        console.log(ex);
+                                    }
+                                };
+                            }
+                        };
+                    }
                     return $.ajax({
                         url: "/admin/users/prefs",
                         type: "POST",
@@ -122,6 +148,22 @@
                 clear: function () {
                     this.data = {};
                     var self = this;
+                    if (workers.userprefs) {
+                        workers.userprefs.postMessage(kendo.stringify({
+                            prefs: this.data,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        }));
+                        return {
+                            done: function (callback) {
+                                workers.userprefs.onmessage = function (event) {
+                                    app().storage.data = JSON.parse(event.data);
+                                    callback.call();
+                                };
+                            }
+                        };
+                    }
                     return $.ajax({
                         url: "/admin/users/prefs",
                         type: "POST",
@@ -137,11 +179,23 @@
                     });
                 },
                 load: function () {
+                    var self = this;
+                    if (workers.userprefs) {
+                        workers.userprefs.postMessage("load");
+                        return {
+                            done: function (callback) {
+                                workers.userprefs.onmessage = function (event) {
+                                    app().storage.data = JSON.parse(event.data);
+                                    callback.call();
+                                };
+                            }
+                        };
+                    }
                     return $.ajax({
                         url: "/admin/users/prefs",
                         dataType: "json",
                         success: function (data) {
-                            app().storage.data = data;
+                            self.data = data;
                         },
                         error: function (xhr, status, msg) {
                             app().Warning(xhr.responseText, msg);
@@ -150,6 +204,8 @@
                 }
             };
             app().storage.load().done(function () {
+                if (app().initialized)
+                    return;
                 app().init();
                 app().run();
             });

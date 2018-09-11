@@ -546,7 +546,7 @@ table.tableEdit tr th {
     padding: 5px;
     margin-bottom: 0px;
     font-weight: normal;
-    text-align: right;
+    text-align: left;
 }
 
 table.tableEdit tr td, table.tableEdit tr th {

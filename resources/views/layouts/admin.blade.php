@@ -24,25 +24,46 @@
     <link href="/app/css/style.css?_=<?php echo time(); ?>" rel="stylesheet" type="text/css" />
     <link href="/app/css/flaticon.css" rel="stylesheet" type="text/css" />
 
-    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="http://kendo.cdn.telerik.com/2018.2.620/js/jquery.min.js"></script>
+    <script>
+        if (typeof jQuery == "undefined") {
+            document.write(decodeURIComponent('%3Cscript src="/js/jquery.min.js" %3E%3C/script%3E'));
+        }
+    </script>
     
     <!--
     <script type="text/javascript" src="/js/kendo.all.min.js"></script>
     -->
     <script src="http://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>
-    
+    <script>
+        if (typeof kendo == "undefined") {
+            document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/kendo.common.min.css" %3C/%3E'));
+            document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/kendo.blueopal.min.css" %3C/%3E'));
+            document.write(decodeURIComponent('%3Cscript src="/js/kendo.all.min.js" %3E%3C/script%3E'));
+        }
+    </script>
     <script class="culture" type="text/javascript"></script>
     <script class="messages" type="text/javascript"></script>
     <script class="language" type="text/javascript"></script>
 
-    <script src="/js/jszip.min.js"></script>
-    <script src="/js/pako_deflate.min.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+    <script>
+        if (typeof JSZip == "undefined") {
+            document.write(decodeURIComponent('%3Cscript src="/js/jszip.min.js" %3E%3C/script%3E'));
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.6/pako_deflate.min.js"></script>
+    <script>
+        if (typeof pako == "undefined") {
+            document.write(decodeURIComponent('%3Cscript src="/js/pako_deflate.min.js" %3E%3C/script%3E'));
+        }
+    </script>
+    
     <script type="text/javascript" src="/app/jquery.jsonp.js"></script>
     <script type="text/javascript" src="/app/jquery.serializeobject.js"></script>
     <script type="text/javascript" src="/app/kendo.console.plugin.js"></script>
     <script type="text/javascript" src="/app/kendo.themechooser.plugin.js"></script>
     <script type="text/javascript" src="/app/Application.js?_=<?php echo time(); ?>"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCb8ZTEbZCKakc3SsiqreaZnQWdBcvKrkk" async defer></script>
 </head>
 <body class="k-content">
     @yield('content')
