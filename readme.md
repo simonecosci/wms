@@ -12,9 +12,10 @@ Using this software requires a commercial license of Kendo UI
 - [Telerik Kendo UI for jQuery](https://www.progress.com/kendo-ui).
 
 
-## License
+## Licenses
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Laravel framework and the WMS are open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
 The Kendo-UI framework is commercial software licensed (https://www.telerik.com/purchase/license-agreement/kendo-ui).
 
 ## Installation
@@ -36,9 +37,9 @@ Then cp .env.example .env and update your database creds.
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=wms
+DB_DATABASE=yourDatabaseName
 DB_USERNAME=root
-DB_PASSWORD=
+DB_PASSWORD=root
 ```
 
 run the migrations with seed
