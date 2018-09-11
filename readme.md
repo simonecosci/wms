@@ -1,4 +1,6 @@
-## WMS - Laravel-KendoUI (Web Desktop-Like Application environment)
+# WMS 
+### Windowed Management System
+## Laravel-KendoUI (Web Desktop-Like Application Environment)
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
 
 ## About WMS
@@ -14,3 +16,6 @@ Using this software requires a commercial license of Kendo UI
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 The Kendo-UI framework is commercial software licensed (https://www.telerik.com/purchase/license-agreement/kendo-ui).
+
+## Installation
+
