@@ -96,6 +96,17 @@ class MenusTableSeeder extends Seeder
             'path' => 'admin/filesystem',
             'icon' => 'document-manager'
         ]);
+        /*
+        DB::table('menus')->insert([
+            'menu_id' => $application,
+            'name' => 'MVC Elements',
+            'index' => 2,
+            'controller' => 'mvc-elements',
+            'path' => 'admin/mvc-elements',
+            'icon' => 'page-properties'
+        ]);
+         * 
+         */
         $items = (new Menu)->read()->toJson();
         $menu = public_path('app/Application.menu.js');
         File::put($menu, $items);

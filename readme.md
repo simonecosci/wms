@@ -21,7 +21,7 @@ The Kendo-UI framework is commercial software licensed (https://www.telerik.com/
 ## Installation
 
 ```
-composer create-project simonecosci/wms 
+composer create-project --stability=dev simonecosci/wms 
 cd wms
 npm install
 ```
@@ -32,7 +32,7 @@ mysql -uroot -p
 mysql> create database yourDatabaseName;
 ```
 
-Then cp .env.example .env and update your database creds.
+Then `cp .env.example .env` and update your database creds.
 ```
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
