@@ -47,4 +47,4 @@ run the migrations with seed
 php artisan migrate:fresh --seed
 ```
 
-
+For more info read the [Wiki](https://github.com/simonecosci/wms/wiki)
