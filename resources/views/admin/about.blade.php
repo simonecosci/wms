@@ -2,7 +2,12 @@
     <div class="k-block" style="padding: 10px; text-align: center;">
         <h1>{{ config('app.name') }}</h1>
         <h2>{{ config('app.description') }}</h2>
+        <a href="https://github.com/simonecosci/wms" target="_blank">Visit the Application's page on Github</a>
         <div class="k-content">
+            <b>Make a donation to support this project</b><br>
+            <button type="button" class="k-button" style="background: silver; font-size: 120%; font-weight: bold;" onclick="window.open('https://www.paypal.me/simonecosci');">
+                <img src="https://www.paypalobjects.com/webstatic/i/logo/rebrand/ppcom-white.svg" style="width: 136px; height: 43px">
+            </button>
             PHP <span id="php-version"></span><br>
             Kendo <span id="kendo-version"></span><br>
             HOST IP <?php echo $_SERVER['SERVER_ADDR']; ?><br>
@@ -18,8 +23,8 @@
         this.stackOnOpen = false;
         this.window = $("#window-about").kendoWindow({
             actions: ["Close"],
-            height: "250px",
-            width: "400px",
+            height: "400px",
+            width: "600px",
             title: "About",
             visible: false,
             modal: true,
