@@ -88,6 +88,14 @@ class MenusTableSeeder extends Seeder
             'path' => 'admin/menus',
             'icon' => 'menu'
         ]);
+        DB::table('menus')->insert([
+            'menu_id' => $application,
+            'name' => 'Files',
+            'index' => 2,
+            'controller' => 'filesystem',
+            'path' => 'admin/filesystem',
+            'icon' => 'document-manager'
+        ]);
         $items = (new Menu)->read()->toJson();
         $menu = public_path('app/Application.menu.js');
         File::put($menu, $items);
