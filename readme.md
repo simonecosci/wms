@@ -1,9 +1,8 @@
 # WMS 
 ### Windowed Management System
 ## Laravel-KendoUI (Web Desktop-Like Application Environment)
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
-
-[](http://www.simonecosci.com/storage/app/media/SS-1.jpg)
+<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg">https://telerikhelper.files.wordpress.com/2015/03/kendoui.png?w=440</p>
+<p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-1.jpg"></p>
 ## About WMS
 
 WMS has been built on top of the Laravel Framework by extending some feature and using kendo-ui as frontend javascript framework.
