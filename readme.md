@@ -42,6 +42,13 @@ DB_USERNAME=root
 DB_PASSWORD=root
 ```
 
+Change (if you want) the initial credential by editing the file `/database/seeds/UsersTableSeeder.php` or use these:
+
+```
+email: simone.cosci@gmail.com
+password: admin
+```
+
 run the migrations with seed
 ```
 php artisan migrate:fresh --seed
