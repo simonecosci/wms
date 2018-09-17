@@ -46,7 +46,7 @@ DB_PASSWORD=root
 Change (if you want) the initial credential by editing the file `/database/seeds/UsersTableSeeder.php` or use these:
 
 ```
-email: simone.cosci@gmail.com
+email: admin@example.com
 password: admin
 ```
 
@@ -54,8 +54,9 @@ run the migrations with seed
 ```
 php artisan migrate:fresh --seed
 ```
+Navigate http://localhost/ and login
 
-For more info read the [Wiki](https://github.com/simonecosci/wms/wiki)
+To create your first window read the [Wiki](https://github.com/simonecosci/wms/wiki)
 
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-2.jpg"></p>
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-3.jpg"></p>
