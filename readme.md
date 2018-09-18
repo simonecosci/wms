@@ -52,11 +52,13 @@ You have to give *write* permission to the following folders while your app is i
 - app/Models
 - app/Http/Controllers/Admin
 - resources/views/admin
+- database/migrations
 - public/app
 ```
 chmod -R 777 app/Models
 chmod -R 777 app/Http/Controllers/Admin
 chmod -R 777 resources/views/admin
+chmod -R 777 database/migrations
 chmod -R 777 public/app
 ```
 

@@ -15,19 +15,25 @@ class MvcElement extends CrudModel {
     ];
 
     public function update(array $attributes = array(), array $options = array()) {
-        $attributes['model'] = json_encode($attributes['model']);
+        foreach(['model', 'view', 'controller'] as $element) {
+            $attributes[$element] = json_encode($attributes[$element]);
+        }
         return parent::update($attributes, $options);
     }
     
     public function create(array $attributes = array(), array $options = array()) {
-        $attributes['model'] = json_encode($attributes['model']);
+        foreach(['model', 'view', 'controller'] as $element) {
+            $attributes[$element] = json_encode($attributes[$element]);
+        }
         return parent::create($attributes, $options);
     }
     
     public function read($options = null) {
         $data = parent::read($options);
         foreach ($data as $key => $item) {
-            $data[$key]['model'] = json_decode($item['model']);
+            foreach(['model', 'view', 'controller'] as $element) {
+                $data[$key][$element] = json_decode($item[$element]);
+            }
         }
         return $data;
     }
