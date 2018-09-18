@@ -55,6 +55,20 @@ run the migrations with seed
 ```
 php artisan migrate:fresh --seed
 ```
+
+Configure a virtualhost in your web server config
+```
+<VirtualHost *:80>
+	ServerName localhost
+	DocumentRoot "/<install-directory>/public"
+	<Directory  "/<install-directory>/public/">
+		Options +Indexes +Includes +FollowSymLinks +MultiViews
+		AllowOverride All
+		Require local
+	</Directory>
+</VirtualHost>
+```
+
 Navigate http://localhost/ and login
 
 You have to give *write* permission to the following folders while your app is in development 
