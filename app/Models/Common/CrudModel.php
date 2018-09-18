@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @abstract Base class for AR CRUD Models
+ * @abstract Base class for All CRUD Models
  */
 abstract class CrudModel extends Model {
 
@@ -16,7 +16,7 @@ abstract class CrudModel extends Model {
     ];
 
     /**
-     *
+     * ehere to place uploads
      * @var string
      */
     protected $uploadFolder;
@@ -81,7 +81,7 @@ abstract class CrudModel extends Model {
     }
 
     /**
-     * 
+     * Recusively add conditions to arrays
      * @param Builder $query
      * @param object $filters
      */
@@ -106,6 +106,11 @@ abstract class CrudModel extends Model {
         });
     }
 
+    /**
+     * if filed contains a dot add whereHas condition to the relation
+     * @param Builder $query
+     * @param object $filter
+     */
     protected function _applyFilter(Builder $query, $filter) {
         $exp = explode('.', $filter->field);
         if (count($exp) > 1) {
@@ -122,7 +127,7 @@ abstract class CrudModel extends Model {
     }
 
     /**
-     * 
+     * Translate strings to symbols
      * @param QueryBuilder $query
      * @param object $filter
      */
@@ -174,7 +179,7 @@ abstract class CrudModel extends Model {
     }
 
     /**
-     * 
+     * Recursively apply order by fields
      * @param Builder $query
      * @param string $sort
      */

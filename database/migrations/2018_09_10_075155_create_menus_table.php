@@ -17,6 +17,11 @@ class CreateMenusTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->unsignedInteger('menu_id')->nullable();
+            $table->foreign('menu_id')
+                    ->references('id')
+                    ->on('menus')
+                    ->onDelete('cascade')
+                    ;
             $table->string('name', 128);
             $table->integer('index');
             $table->string('controller', 128)->nullable();
@@ -25,15 +30,6 @@ class CreateMenusTable extends Migration
             $table->string('icon', 128)->nullable();
             $table->timestamps();
         });
-        Schema::disableForeignKeyConstraints();
-        Schema::table('menus', function (Blueprint $table) {
-            $table->foreign('menu_id')
-                    ->references('id')
-                    ->on('menus')
-                    ->onDelete('cascade')
-                    ;
-        });
-        Schema::enableForeignKeyConstraints();
     }
 
     /**

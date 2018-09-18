@@ -22,8 +22,8 @@ The Kendo-UI framework is commercial software licensed (https://www.telerik.com/
 ## Installation
 
 ```
-composer create-project --stability=dev simonecosci/wms 
-cd wms
+composer create-project --stability=dev simonecosci/wms <install-directory>
+cd <install-directory>
 npm install
 ```
 ## Database
@@ -31,6 +31,7 @@ Creata a new database
 ```
 mysql -uroot -p
 mysql> create database yourDatabaseName;
+mysql> quit;
 ```
 
 Then `cp .env.example .env` and update your database creds.
@@ -56,6 +57,22 @@ php artisan migrate:fresh --seed
 ```
 Navigate http://localhost/ and login
 
+You have to give *write* permission to the following folders while your app is in development 
+- app/Models
+- app/Http/Controllers/Admin
+- resources/views/admin
+- database/migrations
+- public/app
+```
+chmod -R 777 app/Models
+chmod -R 777 app/Http/Controllers/Admin
+chmod -R 777 resources/views/admin
+chmod -R 777 database/migrations
+chmod -R 777 public/app
+```
+
+
+For more info read the [Wiki](https://github.com/simonecosci/wms/wiki)
 To create your first window read the [Wiki](https://github.com/simonecosci/wms/wiki)
 
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-2.jpg"></p>
