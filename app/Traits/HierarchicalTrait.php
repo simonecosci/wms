@@ -13,22 +13,18 @@ trait HierarchicalTrait {
     }
 
     public static function query() {
-        return parent::query()->with(['items', 'languages']);
+        return parent::query()->with(['items']);
     }
 
     public function items() {
         return $this->hasMany(get_class($this), $this->parent_reference)
-                ->with(['items', 'languages'])
+                ->with(['items'])
                 ->orderBy('index', 'ASC');
     }
 
     public function parent() {
         return $this->belongsTo(get_class($this), $this->parent_reference)
-                ->with(['parent', 'languages']);
-    }
-
-    public function languages() {
-        return $this->hasMany(get_class($this) . 'Language')->with('language');
+                ->with(['parent']);
     }
 
     public function remove() {
@@ -56,12 +52,6 @@ trait HierarchicalTrait {
         foreach ($items as $item) {
             $link = $this->link($item, $lang);
             $title = $text = $item->name;
-            foreach ($item->languages as $language) {
-                if ($language->language_id !== $lang)
-                    continue;
-                $text = $language->text;
-                $title = $language->title;
-            }
             $menu .= '<li>'
                     . '<a href="' . e($link) . '" title="' . e($title) . '">'
                     . ($text)
