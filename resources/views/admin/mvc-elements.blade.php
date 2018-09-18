@@ -417,11 +417,8 @@
             <div>
                 <table class="tableEdit">
                     <tr>
-                        <th>
-                            <label for="view_timestamps">append created_at, updated_at columns as TIMESTAMP</label>
-                        </th>
-                        <td>
-                            <input type="checkbox" name="view_timestamps" data-bind="checked:view.timestamps">
+                        <td colspan="2">
+                            <input type="checkbox" name="view_timestamps" data-bind="checked:view.timestamps"> append created_at, updated_at columns as TIMESTAMP
                         </td>
                     </tr>
                 </table>
@@ -435,19 +432,13 @@
             <div>
                 <table class="tableEdit">
                     <tr>
-                        <th>
-                            <label for="view_grid_destroyOnClose">Destroy controller on window close</label>
-                        </th>
                         <td>
-                            <input type="checkbox" name="view_grid_destroyOnClose" data-bind="checked:view.grid.destroyOnClose">
+                            <input type="checkbox" name="view_grid_destroyOnClose" data-bind="checked:view.grid.destroyOnClose"> Destroy controller on window close
                         </td>
                     </tr>
                     <tr>
-                        <th>
-                            <label for="view_grid_reopenOnSave">Reopen edit window after create</label>
-                        </th>
                         <td>
-                            <input type="checkbox" name="view_grid_reopenOnSave" data-bind="checked:view.grid.reopenOnSave">
+                            <input type="checkbox" name="view_grid_reopenOnSave" data-bind="checked:view.grid.reopenOnSave"> Reopen edit window after create
                         </td>
                     </tr>
                 </table>
