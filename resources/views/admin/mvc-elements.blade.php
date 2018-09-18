@@ -81,6 +81,14 @@
             </tr>
             <tr>
                 <th>
+                    <label for="label">Form Label</label>
+                </th>
+                <td>
+                    <input placeholder="eg. Name" type="text" class="k-textbox" name="label" required="required" data-bind="value:label">
+                </td>
+            </tr>
+            <tr>
+                <th>
                     <label for="dbtype">DB Type</label>
                 </th>
                 <td>
@@ -769,6 +777,11 @@
                                         required: true
                                     }
                                 },
+                                label: {
+                                    validation: {
+                                        required: true
+                                    }
+                                },
                                 vartype: {
                                     defaultValue: "string",
                                     validation: {
@@ -970,6 +983,7 @@
                 if (model.isNew()) {
                     fieldsDataSource.add({
                         name: "id",
+                        label: "Id",
                         vartype: "numeric",
                         dbtype: "unsignedInteger",
                         length: null,
@@ -1005,6 +1019,9 @@
                             field: "name",
                             title: "Name"
                         }, {
+                            field: "label",
+                            title: "Label",
+                        }, {
                             field: "vartype",
                             title: "Var Type",
                         }, {
@@ -1038,7 +1055,7 @@
                                 .kendoDropDownList({
                                     valuePrimitive: true,
                                     dataSource: {
-                                        data: ["text", "textarea", "date", "datetime", "number", "checkbox", "select", "chooser", "hidden"]
+                                        data: ["text", "textarea", "editor", "date", "datetime", "number", "checkbox", "select", "chooser", "hidden"]
                                     },
                                     change: function (ev) {
                                         var input = this.value();
