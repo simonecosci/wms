@@ -188,8 +188,8 @@
                         editable: false
                     });
                 });    
-            },
 <?php endforeach; ?>
+            },
 
             onEdit: function (container, model) {
                 app().tabstrip(".tabstrip", container);
