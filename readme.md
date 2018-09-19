@@ -3,7 +3,6 @@
 ## Laravel-KendoUI (Web Desktop-Like Application Environment)
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"><img src="https://telerikhelper.files.wordpress.com/2015/03/kendoui.png?w=440"></p>
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-1.jpg"></p>
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](simone.cosci@gmail.com)
 
 ## About WMS
 
