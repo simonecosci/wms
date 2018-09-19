@@ -20,6 +20,11 @@ class Create{{ ucfirst(camel_case($element->model->table)) }}Table extends Migra
                 foreach($element->model->fields as $field){
                     if ($field->primary && $field->autoincrement) {
                         echo $t . '$table->increments(\'' . $field->name . '\');' . PHP_EOL;
+                        break;
+                    }
+                }
+                foreach($element->model->fields as $field){
+                    if ($field->primary && $field->autoincrement) {
                         continue;
                     }
                     echo $t . '$table->' . $field->dbtype . '(\'' . $field->name . '\'';
