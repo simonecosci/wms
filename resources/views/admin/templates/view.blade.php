@@ -68,7 +68,7 @@
         this.name = '@{{ $controllerName }}';
         this.pageable = <?php echo $element->view->pageable ? 'true' : 'false' ?>;
 <?php if ($element->view->pageable && $element->view->pageSize) : ?>
-        this.pageSize = <?php echo $element->view->pageSize; ?>
+        this.pageSize = <?php echo $element->view->pageSize; ?>;
 <?php endif; ?>
         var $ctrl = this;
         var fields = {
