@@ -302,6 +302,14 @@
                     <input type="checkbox" name="resizable" data-bind="checked:resizable">
                 </td>
             </tr>
+            <tr>
+                <th>
+                    <label for="hidden">Hidden</label>
+                </th>
+                <td>
+                    <input type="checkbox" name="hidden" data-bind="checked:hidden">
+                </td>
+            </tr>
         </table>
     </div>
 </div>
@@ -660,7 +668,7 @@
                             type: "POST",
                             data: { model: kendo.stringify(model.toJSON()) },
                             success: function (code) {
-                                app().Alert("Migration created and placed in\ndatabase/migrations/create_" + model.model.table + "_table.php\nYou can now run the migrate command");
+                                app().Alert("Migration created and placed in\ndatabase/migrations/[date]_create_" + model.model.table + "_table.php<br>You can now run the migrate command");
                                 container.find("#result").text('<' + "?php\n" + code);
                             },
                             error: function (xhr, status, msg) {
@@ -966,6 +974,10 @@
                                 resizable: {
                                     type: "boolean",
                                     defaultValue: true
+                                },
+                                hidden: {
+                                    type: "boolean",
+                                    defaultValue: false
                                 }
                             }
                         }
@@ -975,7 +987,7 @@
                     fieldsDataSource.add({
                         name: "id",
                         label: "Id",
-                        vartype: "numeric",
+                        vartype: "number",
                         dbtype: "unsignedInteger",
                         length: null,
                         decimals: null,
@@ -998,7 +1010,8 @@
                         filterable: true,
                         columnMenu: true,
                         groupable: false,
-                        resizable: true
+                        resizable: true,
+                        hidden: true
                     });
                 }
                 container.find("#grid-fields").kendoGrid({
@@ -1087,7 +1100,7 @@
                                 .kendoDropDownList({
                                     valuePrimitive: true,
                                     dataSource: {
-                                        data: ["string", "numeric", "date", "boolean"]
+                                        data: ["string", "number", "date", "boolean"]
                                     }
                                 });
                                 
@@ -1234,6 +1247,9 @@
                         }, {
                             field: "resizable",
                             title: "Resizable"
+                        }, {
+                            field: "hidden",
+                            title: "Hidden"
                         }, {
                             command: ["edit", "destroy"],
                             width: 160

@@ -827,8 +827,8 @@
                                     }
                                 }
                                 ctrl.grid.dataSource.query($.extend(true, {}, ctrl.initial));
+                                resizeGrid(ctrl.grid.element);
                             }
-                            resizeGrid(ctrl.grid.element);
                         }
                     };
 
@@ -980,7 +980,9 @@
                     };
                 }
                 if ($("#window-" + this.name).length === 1) {
-                    this.grid = this.window.element.find("#grid-" + this.name)[widget](grid).data(widget);
+                    var node = this.window.element.find("#grid-" + this.name);
+                    var _grid = node[widget](grid);
+                    this.grid = _grid.data(widget);
                     this.dataSource = this.grid.dataSource;
                 } else {
                     this.dataSource = new kendo.data[dataSourceType](this.dataSourceOptions);

@@ -63,7 +63,7 @@
     <script type="text/javascript" src="/app/jquery.serializeobject.js"></script>
     <script type="text/javascript" src="/app/kendo.console.plugin.js"></script>
     <script type="text/javascript" src="/app/kendo.themechooser.plugin.js"></script>
-    <script type="text/javascript" src="/app/Application.js?_=<?php echo time(); ?>"></script>
+    <script type="text/javascript" src="/app/Application.js"></script>
 </head>
 <body class="k-content">
     @yield('content')

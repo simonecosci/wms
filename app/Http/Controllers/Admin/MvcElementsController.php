@@ -21,7 +21,7 @@ class MvcElementsController extends CrudController {
         $model = json_decode($request->model);
         $code = view('admin.templates.migration', ['element' => $model])->render();
         $path = base_path('database/migrations') . DIRECTORY_SEPARATOR .
-                'create_' . $model->model->table . '_table.php';
+                date('Y_m_d_his_') . 'create_' . $model->model->table . '_table.php';
         File::put($path, '<?php' . PHP_EOL . $code);
         return $code;
     }
@@ -30,7 +30,42 @@ class MvcElementsController extends CrudController {
         if (!$request->has('model'))
             return abort("Missing aparameters");
         $model = json_decode($request->model);
-        $code = view('admin.templates.model', ['element' => $model])->render();
+        $hasMany = [];
+        $belongsTo = [];
+        $elements = MvcElement::where('name', '!=', $model->name)->get();
+        foreach ($elements as $dependent) {
+            $depententModel = json_decode($dependent->model);
+            if (!isset($depententModel->relations) && !is_array($depententModel->relations)) {
+                continue;
+            }
+            foreach ($depententModel->relations as $relation) {
+                if ($relation->on == $model->model->table) {
+                    $hasMany[] = [
+                        'name' => snake_case($depententModel->name),
+                        'model' => $depententModel->model->name,
+                        'on' => $relation->references
+                    ];
+                }
+            }
+        }
+        foreach ($model->model->relations as $relation) {
+            foreach ($elements as $related) {
+                $relatedModel = json_decode($related->model);
+                if ($relation->on !== $relatedModel->model->table) {
+                    continue;
+                }
+                $belongsTo[] = [
+                    'name' => snake_case($relatedModel->name),
+                    'model' => $relatedModel->model->name,
+                    'on' => $relation->field,
+                ];
+            }
+        }
+        $code = view('admin.templates.model', [
+            'element' => $model,
+            'hasMany' => $hasMany,
+            'belongsTo' => $belongsTo,
+                ])->render();
         $path = app_path('Models') . DIRECTORY_SEPARATOR .
                 $model->model->name . '.php';
         File::put($path, '<?php' . PHP_EOL . $code);

@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Common\CrudController;
 use App\Models\{{ $element->model->name }};
 
-class MvcElementsController extends CrudController {
+class {{ $element->controller->name }} extends CrudController {
 
     protected $view = 'admin.{{ $element->view->name }}';
     
