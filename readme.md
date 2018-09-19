@@ -1,8 +1,9 @@
 # WMS 
 ### Windowed Management System
 ## Laravel-KendoUI (Web Desktop-Like Application Environment)
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"><img src=https://telerikhelper.files.wordpress.com/2015/03/kendoui.png?w=440"></p>
+<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"><img src="https://telerikhelper.files.wordpress.com/2015/03/kendoui.png?w=440"></p>
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-1.jpg"></p>
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](simone.cosci@gmail.com)
 
 ## About WMS
 
@@ -17,7 +18,7 @@ Using this software requires a commercial license of Kendo UI
 
 The Laravel framework and the WMS are open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-The Kendo-UI framework is commercial software licensed (https://www.telerik.com/purchase/license-agreement/kendo-ui).
+The Kendo-UI framework is commercial software licensed [https://www.telerik.com/purchase/license-agreement/kendo-ui](https://www.telerik.com/purchase/license-agreement/kendo-ui).
 
 ## Installation
 
@@ -88,5 +89,6 @@ chmod -R 777 public/app
 
 To create your first window read the [Wiki](https://github.com/simonecosci/wms/wiki)
 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](simone.cosci@gmail.com)
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-2.jpg"></p>
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-3.jpg"></p>
