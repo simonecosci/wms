@@ -24,7 +24,7 @@ abstract class CrudController extends Controller {
 
     /**
      *
-     * @var App\Models\CrudModel
+     * @var App\Models\Common\CrudModel
      */
     protected $model;
     
