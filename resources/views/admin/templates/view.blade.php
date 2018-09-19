@@ -4,6 +4,19 @@
 </div>
 <div style="display: none" id="editForm-popup-template-@{{ $controllerName }}" type="x-kendo/template">
     <div class="editForm-popup">
+<?php if (!empty($element->controller->nested)) : ?>
+        <div id="tabstrip" class="tabstrip">
+            <ul>
+                <li class="k-state-active">Interface</li>
+<?php foreach ($element->controller->nested as $nested) : ?>
+                <li><?php echo $nested->controller; ?></li>
+<?php endforeach; ?>
+            </ul>
+<?php endif; ?>
+<?php if (!empty($element->controller->nested)) : ?>
+            <div>
+<?php endif; ?>
+                
         <div class="divEdit">
             <table class="tableEdit">
 <?php foreach ($element->model->fields as $field) : ?>
@@ -35,6 +48,15 @@
 <?php endforeach; ?>
             </table>
         </div>
+                
+<?php if (!empty($element->controller->nested)) : ?>
+            </div>
+<?php foreach ($element->controller->nested as $nested) : ?>
+            <div>
+                <div id="grid-<?php echo $nested->controller; ?>"></div>
+            </div>
+<?php endforeach; ?>
+<?php endif; ?>
     </div>
 </div>
 <script id="script-@{{ $controllerName }}">

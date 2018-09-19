@@ -20,19 +20,19 @@ class {{ $element->model->name }} extends CrudModel {
 
 @if (!empty($relations))
     public static function query() {
-        return parent::query()->with([{{ sprintf()"'&s'", implode("', '", $relations) }}]);
+        return parent::query()->with([{{ sprintf("'%s'", implode("', '", $relations)) }}]);
     }
 @endif
     
 @foreach($belongsTo as $relation)
-    public function {{ $relation->name }}() {
-        return $this->belongsTo({{ $relation->model }}::class, '{{ $relation->on }}');
+    public function {{ $relation['name'] }}() {
+        return $this->belongsTo({{ $relation['model'] }}::class, '{{ $relation['on'] }}');
     }
     
 @endforeach
 @foreach($hasMany as $relation)
-    public function {{ $relation->name }}() {
-        return $this->hasMany({{ $relation->model }}::class, '{{ $relation->on }}');
+    public function {{ $relation['name'] }}() {
+        return $this->hasMany({{ $relation['model'] }}::class, '{{ $relation['on'] }}');
     }
     
 @endforeach

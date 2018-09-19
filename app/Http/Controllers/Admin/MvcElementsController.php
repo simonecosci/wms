@@ -35,15 +35,15 @@ class MvcElementsController extends CrudController {
         $elements = MvcElement::where('name', '!=', $model->name)->get();
         foreach ($elements as $dependent) {
             $depententModel = json_decode($dependent->model);
-            if (!isset($depententModel->relations) && !is_array($depententModel->relations)) {
+            if (!isset($depententModel->relations) || !is_array($depententModel->relations)) {
                 continue;
             }
             foreach ($depententModel->relations as $relation) {
                 if ($relation->on == $model->model->table) {
                     $hasMany[] = [
                         'name' => snake_case($depententModel->name),
-                        'model' => $depententModel->model->name,
-                        'on' => $relation->references
+                        'model' => $depententModel->name,
+                        'on' => $relation->foreign
                     ];
                 }
             }
