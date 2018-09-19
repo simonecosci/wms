@@ -204,7 +204,7 @@
                 container.find("[name=<?php echo $field->name ?>]").kendoDateTimePicker();
 <?php endif;?>
 <?php if ($field->input == "number"): ?>
-                container.find("[name=<?php echo $field->name ?>]").kendoDateTimePicker({
+                container.find("[name=<?php echo $field->name ?>]").kendoNumericTextBox({
                     format: "n<?php echo is_numeric($field->decimals) ? $field->decimals : 0 ?>"
                 });
 <?php endif;?>
