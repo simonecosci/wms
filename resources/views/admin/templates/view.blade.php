@@ -1,7 +1,11 @@
+<?php if (!empty($element->view->windowed)) : ?>
 <div id="window-@{{ $controllerName }}">
+<?php endif; ?>
     <div id="grid-@{{ $controllerName }}"></div>
+<?php if (!empty($element->view->windowed)) : ?>
     <div id="view-@{{ $controllerName }}"></div>
 </div>
+<?php endif; ?>
 <div style="display: none" id="editForm-popup-template-@{{ $controllerName }}" type="x-kendo/template">
     <div class="editForm-popup">
 <?php if (!empty($element->controller->nested)) : ?>

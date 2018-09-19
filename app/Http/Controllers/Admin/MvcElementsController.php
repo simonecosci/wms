@@ -51,13 +51,13 @@ class MvcElementsController extends CrudController {
         foreach ($model->model->relations as $relation) {
             foreach ($elements as $related) {
                 $relatedModel = json_decode($related->model);
-                if ($relation->on !== $relatedModel->model->table) {
+                if ($relation->on !== $relatedModel->table) {
                     continue;
                 }
                 $belongsTo[] = [
                     'name' => snake_case($relatedModel->name),
-                    'model' => $relatedModel->model->name,
-                    'on' => $relation->field,
+                    'model' => $relatedModel->name,
+                    'on' => $relation->foreign,
                 ];
             }
         }
