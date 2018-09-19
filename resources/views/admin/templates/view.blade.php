@@ -114,9 +114,102 @@
             onView: function (container, model) {
                 app().tabstrip(".tabstrip", container);
                 app().createWidgets($ctrl.name, container, model);
+<?php foreach ($element->model->fields as $field) : ?>
+<?php if ($field->input == "editor"): ?>
+                var text = container.find("[name=<?php echo $field->name ?>]");
+                text.kendoEditor(app().ui.editor.EMPTY);
+                $(text.data("kendoEditor").body).attr("contenteditable", false);    
+<?php endif;?>
+<?php if ($field->input == "date"): ?>
+                container.find("[name=<?php echo $field->name ?>]").kendoDatePicker({
+                    enable: false
+                });
+<?php endif;?>
+<?php if ($field->input == "datetime"): ?>
+                container.find("[name=<?php echo $field->name ?>]").kendoDateTimePicker({
+                    enable: false
+                });
+<?php endif;?>
+<?php if ($field->input == "number"): ?>
+                container.find("[name=<?php echo $field->name ?>]").kendoDateTimePicker({
+                    enable: false,
+                    format: "n<?php echo is_numeric($field->decimals) ? $field->decimals : 0 ?>"
+                });
+<?php endif;?>
+<?php endforeach; ?>
+    
+<?php foreach ($element->controller->nested as $nested) : ?>
+                controller("<?php echo $nested->controller; ?>", function () {
+                    var $ctrl = this;
+                    var cols = this.columns.slice(0, -1); // remove the last col (actions) and use only the following  actions
+                    cols.push({
+                        command: [{
+                                name: "view",
+                                text: " ",
+                                title: "Details",
+                                width: "80px",
+                                iconClass: "k-icon k-i-zoom",
+                                click: function (e) {
+                                    $ctrl.showDetails(e);
+                                }
+                            }]
+                    });
+                    this.dataSource.filter({field: "<?php echo $nested->foreign; ?>", operator: 'eq', value: model.id});
+                    this.grid = this.createGrid({
+                        container: container,
+                        toolbar: false,
+                        columns: cols,
+                        editable: false
+                    });
+                });    
             },
+<?php endforeach; ?>
+
             onEdit: function (container, model) {
                 app().tabstrip(".tabstrip", container);
+<?php foreach ($element->model->fields as $field) : ?>
+<?php if ($field->input == "editor"): ?>
+                container.find("[name=<?php echo $field->name ?>]").kendoEditor(app().ui.editor.FULL);
+<?php endif;?>
+<?php if ($field->input == "date"): ?>
+                container.find("[name=<?php echo $field->name ?>]").kendoDatePicker();
+<?php endif;?>
+<?php if ($field->input == "datetime"): ?>
+                container.find("[name=<?php echo $field->name ?>]").kendoDateTimePicker();
+<?php endif;?>
+<?php if ($field->input == "number"): ?>
+                container.find("[name=<?php echo $field->name ?>]").kendoDateTimePicker({
+                    format: "n<?php echo is_numeric($field->decimals) ? $field->decimals : 0 ?>"
+                });
+<?php endif;?>
+<?php endforeach; ?>
+    
+<?php foreach ($element->controller->nested as $nested) : ?>
+                controller("<?php echo $nested->controller; ?>", function () {
+                    this.dataSource.filter({field: "<?php echo $nested->foreign; ?>", operator: 'eq', value: model.id});
+                    this.grid = this.createGrid({
+                        container: container,
+                        toolbar: !model.isNew() && this.acl.create ? ["create"] : false,
+                        columns: this.columns,
+                        grid: {
+                            edit: function (ev) {
+                                ev.model.set("<?php echo $nested->foreign; ?>", model.id);
+                                ev.model.set("<?php echo $element->name; ?>", model);
+                                var title = !ev.model.isNew() ? "EDIT" : "NEW";
+                                $(".k-window-title", ev.container.parent()).html(title);
+                                app().onEdit("<?php echo $nested->controller; ?>", ev.container, ev.model);
+                            },
+                            editable: {
+                                window: {
+                                    maxHeight: 700,
+                                    width: "80%"
+                                }
+                            }
+                        }
+                    });
+                });
+<?php endforeach; ?>
+                
             }
         });
 

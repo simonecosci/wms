@@ -227,6 +227,29 @@
     </div>
 </div>
 
+<div style="display: none" id="editNested-popup-template-{{ $controllerName }}" type="x-kendo/template">
+    <div class="editForm-popup">
+        <table class="tableEdit">
+            <tr>
+                <th>
+                    <label for="controller">Controller</label>
+                </th>
+                <td>
+                    <input placeholder="eg. orders-products" type="text" name="controller" required="required" data-bind="value:controller">
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="foreign">Foreign key</label>
+                </th>
+                <td>
+                    <input placeholder="eg. order_id" type="text" name="foreign" required="required" data-bind="value:foreign">
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
 <div style="display: none" id="editColumns-popup-template-{{ $controllerName }}" type="x-kendo/template">
     <div class="editForm-popup">
         <table class="tableEdit">
@@ -322,6 +345,7 @@
                 <li>Data Model</li>
                 <li>Relations</li>
                 <li>Grid</li>
+                <li>Nested</li>
                 <li>Operations</li>
             </ul>
             <div>
@@ -355,7 +379,7 @@
                                             <label for="view_window_title">Title</label>
                                         </th>
                                         <td>
-                                            <input placeholder="eg. My Items" type="text" class="k-textbox" name="view_window_title" required="required" data-bind="value:view.window.title">
+                                            <input placeholder="eg. My Items" type="text" class="k-textbox" name="view_window_title" data-bind="value:view.window.title">
                                         </td>
                                     </tr>
                                     <tr>
@@ -426,7 +450,7 @@
                 <table class="tableEdit">
                     <tr>
                         <td colspan="2">
-                            <input type="checkbox" name="view_timestamps" data-bind="checked:view.timestamps"> append created_at, updated_at columns as TIMESTAMP
+                            <input type="checkbox" name="model_timestamps" data-bind="checked:model.timestamps"> append created_at, updated_at columns as TIMESTAMP
                         </td>
                     </tr>
                 </table>
@@ -438,6 +462,7 @@
                 <div id="grid-relations"></div>
             </div>
             <div>
+                <h2>Grid Behavior</h2>
                 <table class="tableEdit">
                     <tr>
                         <td>
@@ -452,6 +477,12 @@
                 </table>
                 <h2>Grid Columns</h2>
                 <div id="grid-columns"></div>
+            </div>
+            <div>
+                <div>
+                    <h2>Nested controllers</h2>
+                    <div id="grid-nested"></div>
+                </div>
             </div>
             <div>
                 <style>
@@ -552,7 +583,8 @@
             },
             controller: {
                 defaultValue: {
-                    name: ""
+                    name: "",
+                    nested: []
                 }
             }
         };
@@ -983,6 +1015,47 @@
                         }
                     }
                 });
+                var nestedDataSource = new kendo.data.DataSource({
+                    data: model.controller.nested,
+                    transport: {
+                        read: function (options) {
+                            options.success(model.controller.nested);
+                        },
+                        create: function (options) {
+                            var items = nestedDataSource.data().toJSON();
+                            model.controller.set("nested", items);
+                            options.success(options.data);
+                        },
+                        update: function (options) {
+                            var items = nestedDataSource.data().toJSON();
+                            model.controller.set("nested", items);
+                            options.success(options.data);
+                        },
+                        destroy: function (options) {
+                            var items = nestedDataSource.data().toJSON();
+                            model.controller.set("nested", items);
+                            options.success(options.data);
+                        }
+                    },
+                    schema: {
+                        model: {
+                            id: "controller",
+                            fields: {
+                                controller: {
+                                    validation: {
+                                        required: true
+                                    }
+                                },
+                                foreign: {
+                                    validation: {
+                                        required: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
                 if (model.isNew()) {
                     fieldsDataSource.add({
                         name: "id",
@@ -1148,6 +1221,7 @@
                         template: $("#editFields-popup-template-" + $ctrl.name).html()
                     }
                 });
+                
                 container.find("#grid-relations").kendoGrid({
                     dataSource: relationsDataSource,
                     toolbar: ["create"],
@@ -1215,6 +1289,57 @@
                         template: $("#editRelations-popup-template-" + $ctrl.name).html()
                     }
                 });
+                
+                container.find("#grid-nested").kendoGrid({
+                    dataSource: nestedDataSource,
+                    toolbar: ["create"],
+                    height: 350,
+                    scrollable: true,
+                    columns: [{
+                            field: "controller",
+                            title: "Controller"
+                        }, {
+                            field: "foreign",
+                            title: "Foreign key"
+                        }, {
+                            command: ["edit", "destroy"],
+                            width: 160
+                        }],
+                    batch: true,
+                    edit: function (e) {
+                        var tables = [];
+                        var items = $ctrl.dataSource.data();
+                        for (var i = 0; i < items.length; i++) {
+                            tables.push(items[i].name);
+                        }
+                        e.container.find("[name=foreign]").kendoComboBox({
+                            dataSource: []
+                        });
+                        e.container.find("[name=controller]").kendoComboBox({
+                            dataSource: tables,
+                            change: function () {
+                                var controller = this.value();
+                                var fields = [];
+                                var items = $ctrl.dataSource.data();
+                                for (var i = 0; i < items.length; i++) {
+                                    if (items[i].name !== controller)
+                                        continue;
+                                    for (var c = 0; c < items[i].model.fields.length; c++) {
+                                        fields.push(items[i].model.fields[c].name);
+                                    }
+                                }
+                                e.container.find("[name=foreign]")
+                                        .data("kendoComboBox")
+                                        .setDataSource(fields);
+                            }
+                        }).data("kendoComboBox").trigger("change");
+                    },
+                    editable: {
+                        mode: "popup",
+                        template: $("#editNested-popup-template-" + $ctrl.name).html()
+                    }
+                });
+                
                 container.find("#grid-columns").kendoGrid({
                     dataSource: columnsDataSource,
                     toolbar: ["create"],
