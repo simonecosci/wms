@@ -23,6 +23,7 @@ class Create{{ ucfirst(camel_case($element->model->table)) }}Table extends Migra
                         break;
                     }
                 }
+                $indexes = [];
                 foreach($element->model->fields as $field){
                     if ($field->primary && $field->autoincrement) {
                         continue;
@@ -37,23 +38,36 @@ class Create{{ ucfirst(camel_case($element->model->table)) }}Table extends Migra
                         echo '->nullable()';
                     if (!empty($field->unique))
                         echo '->unique()';
-                    if (!empty($field->autoincrement))
+                    if (!empty($field->default))
+                        echo '->default(' . $field->default . ')';
+                    if (!$field->primary && $field->autoincrement) 
                         echo '->autoIncrement()';
                     echo ';' . PHP_EOL;
+                    if ($field->index) {
+                        $indexes[] = $field->name;
+                    }
                 }
                 if ($element->model->timestamps)
                     echo $t . '$table->timestamps();' . PHP_EOL;
-                
-                foreach($element->model->relations as $field){
-                    echo $t . '$table->foreign(\'' . $field->foreign . '\')'
-                            . '->references(\'' . $field->references . '\')'
-                            . '->on(\'' . $field->on . '\')'
-                            . '->onDelete(\'' . $field->onDelete . '\')'
-                            . ';' . PHP_EOL;
+                if (count($indexes) > 0) {
+                    echo $t . '$table->index([\'' . implode("', '", $indexes) . '\']);';
                 }
             ?>
             
         });
+        
+<?php if (!empty($element->model->relations)) : ?>
+        Schema::table('{{ $element->model->table }}', function($table) {
+<?php foreach($element->model->relations as $field){
+        echo $t . '$table->foreign(\'' . $field->foreign . '\')'
+                . '->references(\'' . $field->references . '\')'
+                . '->on(\'' . $field->on . '\')'
+                . '->onDelete(\'' . $field->onDelete . '\')'
+                . ';' . PHP_EOL;
+    }
+?>
+        });
+<?php endif; ?>
     }
 
     /**

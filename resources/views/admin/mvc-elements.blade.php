@@ -184,6 +184,14 @@
                     <input type="checkbox" name="autoincrement" data-bind="checked:autoincrement">
                 </td>
             </tr>
+            <tr>
+                <th>
+                    <label for="default">Default</label>
+                </th>
+                <td>
+                    <input type="text" class="k-textbox" name="default" data-bind="value:default">
+                </td>
+            </tr>
         </table>
     </div>
 </div>
@@ -827,7 +835,7 @@
                                 },
                                 length: {
                                     type: "numeric",
-                                    defaultValue: 128,
+                                    defaultValue: 0,
                                     validation: {
                                         required: false,
                                         nullable: true
@@ -882,6 +890,13 @@
                                 autoincrement: {
                                     type: "boolean",
                                     defaultValue: false
+                                },
+                                default: {
+                                    defaultValue: "text",
+                                    validation: {
+                                        required: false,
+                                        nullable: true
+                                    }
                                 }
                             }
                         }
@@ -1072,6 +1087,7 @@
                         unique: true,
                         index: true,
                         primary: true,
+                        default: null,
                         autoincrement: true
                     });
                     columnsDataSource.add({
@@ -1205,7 +1221,8 @@
                                             "timeTz",
                                             "timestamp",
                                             "timestampTz",
-                                            "tinyInteger"
+                                            "tinyInteger",
+                                            "unsignedInteger"
                                         ]
                                     }
                                 });

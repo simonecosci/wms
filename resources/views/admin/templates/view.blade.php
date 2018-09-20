@@ -24,7 +24,7 @@
         <div class="divEdit">
             <table class="tableEdit">
 <?php foreach ($element->model->fields as $field) : ?>
-<?php if ($field->primary || !$field->fillable) continue; ?>
+<?php if ($field->input == 'hidden' || $field->primary || !$field->fillable) continue; ?>
                 <tr>
                     <th>
                         <label for="<?php echo $field->name; ?>"><?php echo $field->label; ?></label>
@@ -43,9 +43,7 @@
 <?php break; case 'select': ?>
                         <select class="k-textbox" name="<?php echo $field->name; ?>" <?php echo $field->required ? '' : 'required="required" '; ?>data-bind="value:<?php echo $field->name; ?>"></select>
 <?php break; case 'chooser': ?>
-                        @@include('chooser', ['field' => '<?php echo $field->name; ?>')
-<?php break; case 'hidden': ?>
-                        <input type="hidden" name="<?php echo $field->name; ?>" <?php echo $field->required ? '' : 'required="required" '; ?>data-bind="value:<?php echo $field->name; ?>">
+                        @@include('chooser', ['field' => '<?php echo $field->name; ?>'])
 <?php break; default: break; endswitch; ?>
                     </td>
                 </tr>
@@ -90,13 +88,63 @@
 <?php endif; ?>
 <?php if ($field->input == 'chooser') : ?>
                 ,chooser: {
+                    controllerName: this.name,
                     field: "<?php echo $field->name ?>",
                     controller: "<?php echo $field->inputOptions->controller ?>",
                     path: "<?php echo $field->inputOptions->path ?>",
-                    display: <?php echo collect(explode(',', $field->inputOptions->display))->map(function ($name) { return sprintf('"%s"',trim($name)); })->toJson(); ?>
+                    display: <?php echo collect(explode(',', $field->inputOptions->display))->map(function ($name) { return sprintf('%s',trim($name)); })->toJson(); ?>,
+                    columns: [
+<?php 
+$relatedElement = App\Models\MvcElement::whereName($field->inputOptions->controller)->first();
+if (!empty($relatedElement)) :
+    $relatedElementModel = json_decode($relatedElement->model);
+    $relatedElementView = json_decode($relatedElement->view);
+    foreach ($relatedElementView->columns as $chooserColumn) : ?>
+                    {
+                        field: "<?php echo $chooserColumn->field; ?>",
+                        title: "<?php echo $chooserColumn->title; ?>",
+<?php if (!empty($chooserColumn->width)): ?>
+                        width: "<?php echo $chooserColumn->width; ?>",
+<?php endif; ?>
+<?php if (!empty($chooserColumn->template)): ?>
+                        template: "<?php echo $chooserColumn->template; ?>",
+<?php endif; ?>
+<?php if ($chooserColumn->hidden): ?>
+                        hidden: true,
+<?php endif; ?>
+<?php if (!$chooserColumn->filterable): ?>
+                        filterable: false,
+<?php endif; ?>
+<?php if (!$chooserColumn->sortable): ?>
+                        sortable: false,
+<?php endif; ?>
+<?php if (!$chooserColumn->columnMenu): ?>
+                        columnMenu: false,
+<?php endif; ?>
+<?php if (!$chooserColumn->groupable): ?>
+                        groupable: false,
+<?php endif; ?>
+<?php if (!$chooserColumn->resizable): ?>
+                        resizable: false,
+<?php endif; ?>
+<?php $_field = collect($relatedElementModel->fields)->where('name', $chooserColumn->field)->first(); ?>
+<?php if (!empty($_field)): ?>
+<?php if ($_field->vartype == 'date' || $_field->input == 'date'): ?>
+                        format: "{0:dd-MM-yyyy}",
+<?php elseif ($_field->input == 'datetime'): ?>
+                        format: "{0:dd-MM-yyyy HH:mm:ss}",
+<?php endif; ?>
+<?php endif; ?>
+                    },        
+<?php endforeach; endif; ?>
+                    ]
                 }
 <?php endif; ?>
             },
+<?php endforeach; ?>
+
+<?php foreach ($belongsTo as $field) : ?>
+            <?php echo $field; ?>: {},
 <?php endforeach; ?>
         };
 
@@ -128,6 +176,14 @@
 <?php endif; ?>
 <?php if (!$column->resizable): ?>
                 resizable: false,
+<?php endif; ?>
+<?php $field = collect($element->model->fields)->where('name', $column->field)->first(); ?>
+<?php if (!empty($field)): ?>
+<?php if ($field->vartype == 'date' || $field->input == 'date'): ?>
+                format: "{0:dd-MM-yyyy}",
+<?php elseif ($field->input == 'datetime'): ?>
+                format: "{0:dd-MM-yyyy HH:mm:ss}",
+<?php endif; ?>
 <?php endif; ?>
             },
 <?php endforeach; ?>
@@ -227,8 +283,7 @@
                             },
                             editable: {
                                 window: {
-                                    maxHeight: 700,
-                                    width: "80%"
+                                    maxHeight: 700
                                 }
                             }
                         }

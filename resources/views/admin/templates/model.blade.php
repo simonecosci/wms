@@ -4,9 +4,10 @@ foreach ($element->model->fields as $field) {
     if ($field->fillable)
         $fillables[] = $field->name;
 }
+
 $relations = [];
-foreach ($element->model->relations as $relation) {
-    $relations[] = $relation->on;
+foreach ($belongsTo as $relation) {
+    $relations[] = $relation['name'];
 }
 ?>
 namespace App\Models;

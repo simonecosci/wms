@@ -87,7 +87,21 @@ class MvcElementsController extends CrudController {
         if (!$request->has('model'))
             return abort("Missing aparameters");
         $model = json_decode($request->model);
-        $code = view('admin.templates.view', ['element' => $model])->render();
+        $elements = MvcElement::where('name', '!=', $model->name)->get();
+        $belongsTo = [];
+        foreach ($model->model->relations as $relation) {
+            foreach ($elements as $related) {
+                $relatedModel = json_decode($related->model);
+                if ($relation->on !== $relatedModel->table) {
+                    continue;
+                }
+                $belongsTo[] = snake_case($relatedModel->name);
+            }
+        }
+        $code = view('admin.templates.view', [
+            'element' => $model,
+            'belongsTo' => $belongsTo
+                ])->render();
         $path = resource_path('views/admin') . DIRECTORY_SEPARATOR .
                 $model->view->name . '.blade.php';
         File::put($path, $code);
