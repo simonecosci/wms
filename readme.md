@@ -12,7 +12,15 @@ WMS has been built on top of the Laravel Framework by extending some feature and
 - [Telerik Kendo UI for jQuery](https://www.progress.com/kendo-ui).
 
 ## Installation
+Cloning the git
+```
+git clone https://github.com/simonecosci/wms.git <install-directory>
+cd <install-directory>
+composer install
+npm install
+```
 
+Via Composer
 ```
 composer create-project --stability=dev simonecosci/wms <install-directory>
 cd <install-directory>
