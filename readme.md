@@ -79,7 +79,7 @@ chmod -R 777 public/app
 ```
 
 
-##To create your first window read the [Wiki](https://github.com/simonecosci/wms/wiki)##
+## To create your first window read the [Wiki](https://github.com/simonecosci/wms/wiki)
 
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-2.jpg"></p>
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-3.jpg"></p>
