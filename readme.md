@@ -7,7 +7,6 @@
 ## About WMS
 
 WMS has been built on top of the Laravel Framework by extending some feature and using kendo-ui as frontend javascript framework.
-Using this software requires a commercial license of Kendo UI
 
 - [Laravel](https://laravel.com/docs/5.6).
 - [Telerik Kendo UI for jQuery](https://www.progress.com/kendo-ui).
@@ -90,3 +89,5 @@ chmod -R 777 public/app
 The Laravel framework and the WMS are open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 The Kendo-UI framework is commercial software licensed [https://www.telerik.com/purchase/license-agreement/kendo-ui](https://www.telerik.com/purchase/license-agreement/kendo-ui).
+
+Using this software requires a commercial license of Kendo UI
