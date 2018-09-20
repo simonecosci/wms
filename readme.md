@@ -12,13 +12,6 @@ Using this software requires a commercial license of Kendo UI
 - [Laravel](https://laravel.com/docs/5.6).
 - [Telerik Kendo UI for jQuery](https://www.progress.com/kendo-ui).
 
-
-## Licenses
-
-The Laravel framework and the WMS are open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-The Kendo-UI framework is commercial software licensed [https://www.telerik.com/purchase/license-agreement/kendo-ui](https://www.telerik.com/purchase/license-agreement/kendo-ui).
-
 ## Installation
 
 ```
@@ -90,3 +83,10 @@ To create your first window read the [Wiki](https://github.com/simonecosci/wms/w
 
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-2.jpg"></p>
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-3.jpg"></p>
+
+
+## Licenses
+
+The Laravel framework and the WMS are open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+The Kendo-UI framework is commercial software licensed [https://www.telerik.com/purchase/license-agreement/kendo-ui](https://www.telerik.com/purchase/license-agreement/kendo-ui).
