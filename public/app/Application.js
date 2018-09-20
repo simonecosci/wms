@@ -827,8 +827,9 @@
                                     }
                                 }
                                 ctrl.grid.dataSource.query($.extend(true, {}, ctrl.initial));
-                                resizeGrid(ctrl.grid.element);
                             }
+                            if (ctrl.grid)
+                                resizeGrid(ctrl.grid.element);
                         }
                     };
 
