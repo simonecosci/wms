@@ -105,10 +105,10 @@
             }
         },
         statusCode: {
-            404: function (e) {
+            400: function (e) {
                 var title = "Resource not found";
                 var message = "<h1>Warning,</h1>Your request can't be processed.<br>";
-                message += "The resource you are trying to reach seems to be unavailable.";
+                message += e.message;
                 Application.Warning(message, title);
             },
             401: function (e) {
@@ -121,6 +121,12 @@
                     $("body").hide();
                     window.location = "/";
                 });
+            },
+            404: function (e) {
+                var title = "Resource not found";
+                var message = "<h1>Warning,</h1>Your request can't be processed.<br>";
+                message += "The resource you are trying to reach seems to be unavailable.";
+                Application.Warning(message, title);
             },
             500: function (e) {
                 var re = {
