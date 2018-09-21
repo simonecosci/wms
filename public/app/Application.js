@@ -106,7 +106,7 @@
         },
         statusCode: {
             400: function (e) {
-                var title = "Resource not found";
+                var title = "An Error Occurred";
                 var message = "<h1>Warning,</h1>Your request can't be processed.<br>";
                 message += e.message;
                 Application.Warning(message, title);
