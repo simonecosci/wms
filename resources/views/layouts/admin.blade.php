@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Pierotucci') }}</title>
+    <title>{{ config('app.name', 'WMS') }}</title>
 
     <!--
     <link href="/styles/kendo.common.min.css" rel="stylesheet" />
@@ -21,7 +21,7 @@
     
     <link href="/app/css/extend.default.css" rel="stylesheet" type="text/css" />
     
-    <link href="/app/css/style.css?_=<?php echo time(); ?>" rel="stylesheet" type="text/css" />
+    <link href="/app/css/style.css" rel="stylesheet" type="text/css" />
     <link href="/app/css/flaticon.css" rel="stylesheet" type="text/css" />
 
     <script src="http://kendo.cdn.telerik.com/2018.2.620/js/jquery.min.js"></script>
