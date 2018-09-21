@@ -13,14 +13,15 @@ trait UploadTrait {
 
     public function upload(Request $request) {
         if (!$request->hasFile('file')) {
-            return abort(500);
+            return abort(400, "Missing file");
         }
         if (!$request->file('file')->isValid()) {
-            return abort(500);
+            return abort(400, "File not valid");
         }
         $id = $request->input('id');
-        if (empty($id))
-            return abort(500);
+        if (empty($id)) {
+            return abort(400, "Missing id");
+        }
         $request->file->storeAs('public/' . $this->getModel()
                 ->getUploadFolder(), $this->mapName($id));
         return [];
@@ -28,8 +29,9 @@ trait UploadTrait {
 
     public function remove(Request $request) {
         $id = $request->input('id');
-        if (empty($id))
-            return abort(500);
+        if (empty($id)) {
+            return abort(400, "Missing id");
+        }
         $file = $this->getBasePath() . 
                 $this->getModel()->getUploadFolder() . DIRECTORY_SEPARATOR . 
                 $this->mapName($id);

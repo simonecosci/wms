@@ -5,7 +5,6 @@ namespace App;
 use App\Models\Common\CrudModel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;

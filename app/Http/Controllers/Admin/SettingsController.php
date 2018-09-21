@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Common\Controller;
 
@@ -15,10 +14,10 @@ class SettingsController extends Controller {
     
     public function upload(Request $request) {
         if (!$request->hasFile('file')) {
-            return abort(500);
+            return abort(400, "Missing file");
         }
         if (!$request->file('file')->isValid()) {
-            return abort(500);
+            return abort(400, "File not valid");
         }
         $file = $request->file('file');
         $file->storeAs('', $file->getClientOriginalName(), 'wallpapers');
@@ -27,10 +26,12 @@ class SettingsController extends Controller {
 
     public function remove(Request $request) {
         $name = $request->input('fileNames');
-        if (empty($name))
-            return abort(500);
-        if (!Storage::disk('wallpapers')->exists(basename($name)))
-            return abort(404);
+        if (empty($name)) {
+            return abort(400, "Empty fileNames");
+        }
+        if (!Storage::disk('wallpapers')->exists(basename($name))) {
+            return abort(404, "File not found");
+        }
         Storage::disk('wallpapers')->delete(basename($name));
         return [];
     }
@@ -50,7 +51,7 @@ class SettingsController extends Controller {
 
     public function checkPassword(Request $request) {
         if (($password = $request->input("password")) === null) {
-            throw new BadRequestHttpException();
+            return abort(400, "Password not valid");
         }
         $check = Hash::check($password, Auth::user()->password);
         return ['check' => $check];
@@ -58,7 +59,7 @@ class SettingsController extends Controller {
 
     public function changePassword(Request $request) {
         if (($password = $request->input("password")) === null) {
-            throw new BadRequestHttpException();
+            return abort(400, "Password not valid");
         }
         Auth::user()->password = Hash::make($password);
         Auth::user()->save();

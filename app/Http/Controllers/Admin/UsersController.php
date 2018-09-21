@@ -17,8 +17,9 @@ class UsersController extends CrudController {
             $request->user()->prefs = $request->prefs;
             $request->user()->save();
         }
-        if ($request->user()->prefs === null)
+        if ($request->user()->prefs === null) {
             return "{}";
+        }
         return $request->user()->prefs;
     }
 }

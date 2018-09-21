@@ -32,9 +32,9 @@ class FilesystemController extends Controller {
 
     public function thumbnail(Request $request) {
         $path = $this->getBasePath() . $request->input('path');
-        if (empty($path))
-            return abort(500);
-
+        if (empty($path)) {
+            return abort(400, "Missing path");
+        }
         $extension = strtolower(File::extension($path));
         if (in_array($extension, ['jpg', 'png', 'gif'])) {
             $img = Image::make($path)->resize(80, null, function ($constraint) {
@@ -72,11 +72,13 @@ class FilesystemController extends Controller {
 
     public function create(Request $request) {
         $name = $request->input('name');
-        if (empty($name))
-            return abort(500);
+        if (empty($name)) {
+            return abort(400, "Mieesing name");
+        }
         $type = $request->input('type');
-        if (empty($type))
-            return abort(500);
+        if (empty($type)) {
+            return abort(400, "Mieesing type");
+        }
         $path = $request->input('path');
         $file = $this->getBasePath() . trim($path) . trim($name);
         switch ($type) {
@@ -100,10 +102,10 @@ class FilesystemController extends Controller {
 
     public function upload(Request $request) {
         if(!$request->hasFile('file')) {
-            return abort(500);
+            return abort(400, "Mieesing file");
         }
         if (!$request->file('file')->isValid()) {
-            return abort(500);
+            return abort(400, "File not valid");
         }
         $name = $request->file->getClientOriginalName();
         $size = $request->file->getClientSize();
@@ -117,8 +119,9 @@ class FilesystemController extends Controller {
     
     public function destroy(Request $request) {
         $name = $request->input('name');
-        if (empty($name))
-            return abort(500);
+        if (empty($name)) {
+            return abort(400, "Mieesing file name");
+        }
         $path = $request->input('path');
         $file = $this->getBasePath() . $path . $name;
         $type = substr(File::type($file), 0, 1);

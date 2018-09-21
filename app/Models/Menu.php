@@ -22,7 +22,9 @@ class Menu extends CrudModel {
     }
 
     public function items() {
-        return $this->hasMany(get_class($this), 'menu_id')->with(['items'])->orderBy('index', 'ASC');
+        return $this->hasMany(get_class($this), 'menu_id')
+                ->with(['items'])
+                ->orderBy('index', 'ASC');
     }
 
     public function remove() {

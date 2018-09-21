@@ -15,7 +15,7 @@ class MenusController extends CrudController {
 
     public function update(Request $request) {
         if ($request->input("models") === null) {
-            throw new BadRequestHttpException();
+            return abort(400, "Missing models");
         }
         $models = json_decode($request->input("models"), JSON_OBJECT_AS_ARRAY);
         foreach ($models as $k => $model) {
@@ -31,6 +31,9 @@ class MenusController extends CrudController {
             $model = new Menu();
         else
             $model = Menu::find($data['id']);
+        if (empty($model)) {
+            return abort(401, "Element not found");
+        }
         $model->fill($data)->save();
         foreach ($data['items'] as $k => $item) {
             $item['index'] = $k;
@@ -41,7 +44,7 @@ class MenusController extends CrudController {
 
     public function destroy(Request $request) {
         if ($request->input("models") === null) {
-            throw new BadRequestHttpException();
+            return abort(400, "Missing models");
         }
         $models = json_decode($request->input("models"), JSON_OBJECT_AS_ARRAY);
         foreach ($models as $data) {

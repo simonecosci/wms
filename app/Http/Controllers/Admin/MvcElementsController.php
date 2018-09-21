@@ -17,7 +17,7 @@ class MvcElementsController extends CrudController {
 
     public function createMigration(Request $request) {
         if (!$request->has('model'))
-            return abort("Missing aparameters");
+            return abort(400, "Missing aparameters");
         $model = json_decode($request->model);
         $code = view('admin.templates.migration', ['element' => $model])->render();
         $path = base_path('database/migrations') . DIRECTORY_SEPARATOR .
@@ -28,7 +28,7 @@ class MvcElementsController extends CrudController {
 
     public function createModel(Request $request) {
         if (!$request->has('model'))
-            return abort("Missing aparameters");
+            return abort(400, "Missing aparameters");
         $model = json_decode($request->model);
         $hasMany = [];
         $belongsTo = [];
@@ -74,7 +74,7 @@ class MvcElementsController extends CrudController {
 
     public function createController(Request $request) {
         if (!$request->has('model'))
-            return abort("Missing aparameters");
+            return abort(400, "Missing aparameters");
         $model = json_decode($request->model);
         $code = view('admin.templates.controller', ['element' => $model])->render();
         $path = app_path('Http/Controllers/Admin') . DIRECTORY_SEPARATOR .
@@ -85,7 +85,7 @@ class MvcElementsController extends CrudController {
 
     public function createView(Request $request) {
         if (!$request->has('model'))
-            return abort("Missing aparameters");
+            return abort(400, "Missing aparameters");
         $model = json_decode($request->model);
         $elements = MvcElement::where('name', '!=', $model->name)->get();
         $belongsTo = [];

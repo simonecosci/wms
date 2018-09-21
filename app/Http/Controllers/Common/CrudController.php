@@ -7,7 +7,6 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App;
 
 abstract class CrudController extends Controller {
@@ -52,7 +51,7 @@ abstract class CrudController extends Controller {
     public function get(Request $request) {
         $key = $this->getModel()->getKeyName();
         if (!$request->has($key)) {
-            throw new BadRequestHttpException();
+            return abort(400, "Missing $key");
         }
         return $this->getModel()->find($request->input($key));
     }
@@ -74,7 +73,7 @@ abstract class CrudController extends Controller {
      */
     public function create(Request $request) {
         if ($request->input("models") === null) {
-            throw new BadRequestHttpException();
+            return abort(400, "Missing models");
         }
         $models = json_decode($request->input("models"), JSON_OBJECT_AS_ARRAY);
         foreach ($models as $k => $data) {
@@ -95,7 +94,7 @@ abstract class CrudController extends Controller {
      */
     public function update(Request $request) {
         if ($request->input("models") === null) {
-            throw new BadRequestHttpException();
+            return abort(400, "Missing models");
         }
         $models = json_decode($request->input("models"), JSON_OBJECT_AS_ARRAY);
         foreach ($models as $k => $data) {
@@ -118,7 +117,7 @@ abstract class CrudController extends Controller {
      */
     public function destroy(Request $request) {
         if ($request->input("models") === null) {
-            throw new BadRequestHttpException();
+            return abort(400, "Missing models");
         }
         $models = json_decode($request->input("models"), JSON_OBJECT_AS_ARRAY);
         $key = $this->getModel()->getKeyName();
@@ -132,7 +131,7 @@ abstract class CrudController extends Controller {
     }
 
     /**
-     * 
+     * if not specified use the class name snaked as view name
      * @return string
      */
     public function getView() {
@@ -147,11 +146,12 @@ abstract class CrudController extends Controller {
     }
 
     /**
-     * 
-     * @return App\Models\CrudModel
+     * Return a model filled with given data
+     * @param array $data
+     * @return \App\Models\Common\CrudModel
      */
     public function getModel(array $data = array()) {
-        return App::make(get_class($this->model));
+        return App::make(get_class($this->model))->fill($data);
     }
 
 }

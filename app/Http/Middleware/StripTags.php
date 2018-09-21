@@ -14,8 +14,6 @@ class StripTags extends TransformsRequest {
     protected $except = [
         'models', 
         'model',
-        'text',
-        'email_text'
     ];
 
     /**

@@ -91,10 +91,12 @@ abstract class CrudModel extends Model {
             $logic = $filters->logic;
             $filters = $filters->filters;
         }
-        if ($logic === "and")
+        if ($logic === "and") {
             $method = 'where';
-        if ($logic === "or")
+        }
+        if ($logic === "or") {
             $method = 'orWhere';
+        }
         $query->$method(function ($query) use ($filters) {
             foreach ($filters as $filter) {
                 if (is_array($filter) || isset($filter->logic)) {
@@ -116,14 +118,16 @@ abstract class CrudModel extends Model {
         if (count($exp) > 1) {
             do {
                 $f = array_pop($exp);
-                $query->whereHas(implode('.', $exp), function($query) use ($exp, $f, $filter) {
+                $query->whereHas(implode('.', $exp), function($query) 
+                        use ($exp, $f, $filter) {
                     $_filter = clone $filter;
                     $_filter->field = $f;
                     $this->_applyWhere($query, $_filter);
                 });
             } while (count($exp) > 1);
-        } else
+        } else {
             $this->_applyWhere($query, $filter);
+        }
     }
 
     /**
@@ -198,8 +202,9 @@ abstract class CrudModel extends Model {
                         $query->orderBy($_orderBy->field, $orderBy->dir);
                     });
                 } while (count($exp) > 1);
-            } else
+            } else {
                 $query->orderBy($orderBy->field, $orderBy->dir);
+            }
         }
     }
 
