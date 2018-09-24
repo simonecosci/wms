@@ -8,9 +8,7 @@
 <div id="shortcuts"></div>
 
 <script type="text/javascript">
-
-    window.workers = {};
-
+    
     function toggleFullScreen() {
         if (!document.fullscreenElement &&
                 !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
@@ -50,43 +48,18 @@
 
     $(document).ready(function () {
 
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
         try {
+            
+            app().kendoVersion = "2018.2.620";
             app().Auth = {
                 logout: function () {
                     window.location = '/logout';
                 },
-                Name: "{{ $user->name }}",
+                Name: "{{ $user->username }}",
                 Email: "{{ $user->email }}"
             };
-
-            if (window.Worker)
-                workers.userprefs = new Worker('/app/workers/user-prefs.js');
-
+            
             $(app()).on("ready", function () {
-
-                var names = kendo.culture().calendars.standard.months.names;
-                app().months = new kendo.data.DataSource();
-                for (var i = 0; i < names.length; i++) {
-                    app().months.add({
-                        text: names[i],
-                        value: i + 1
-                    });
-                }
-                app().getMonth = function (index) {
-                    var data = app().months.data();
-                    for (var i = 0; i < data.length; i++) {
-                        if (data[i].value === parseInt(index))
-                            return data[i].text;
-                    }
-                    return "";
-                };
-
                 $("<div>Logged as <b>" + app().Auth.Name + "</b> " + app().Auth.Email + " <a href=\"#\" id=\"logout-button\" title=\"Logout\"><span class=\"k-icon k-i-logout\"></span></a></div>")
                         .css({
                             display: "inline-block",
@@ -101,114 +74,13 @@
                         app().Auth.logout();
                     });
                 });
-
             });
-            app().storage = {
-                data: {},
-                setItem: function (key, value) {
-                    this.data[key] = value;
-                    var self = this;
-                    if (workers.userprefs) {
-                        workers.userprefs.postMessage(kendo.stringify({
-                            prefs: this.data,
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        }));
-                        return {
-                            done: function (callback) {
-                                workers.userprefs.onmessage = function (event) {
-                                    try {
-                                        app().storage.data = JSON.parse(event.data);
-                                        callback.call();
-                                    } catch (ex) {
-                                        console.log(ex);
-                                    }
-                                };
-                            }
-                        };
-                    }
-                    return $.ajax({
-                        url: "/admin/users/prefs",
-                        type: "POST",
-                        data: {prefs: kendo.stringify(this.data)},
-                        dataType: "json",
-                        success: function (data) {
-                            self.data = data;
-                        },
-                        error: function (xhr, status, msg) {
-                            console.log(xhr, status, msg);
-                            app().Warning(xhr.responseText, msg);
-                        }
-                    });
-                },
-                getItem: function (key) {
-                    return this.data[key];
-                },
-                clear: function () {
-                    this.data = {};
-                    var self = this;
-                    if (workers.userprefs) {
-                        workers.userprefs.postMessage(kendo.stringify({
-                            prefs: this.data,
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        }));
-                        return {
-                            done: function (callback) {
-                                workers.userprefs.onmessage = function (event) {
-                                    app().storage.data = JSON.parse(event.data);
-                                    callback.call();
-                                };
-                            }
-                        };
-                    }
-                    return $.ajax({
-                        url: "/admin/users/prefs",
-                        type: "POST",
-                        data: {prefs: kendo.stringify(this.data)},
-                        dataType: "json",
-                        success: function (data) {
-                            self.data = data;
-                        },
-                        error: function (xhr, status, msg) {
-                            console.log(xhr, status, msg);
-                            app().Warning(xhr.responseText, msg);
-                        }
-                    });
-                },
-                load: function () {
-                    var self = this;
-                    if (workers.userprefs) {
-                        workers.userprefs.postMessage("load");
-                        return {
-                            done: function (callback) {
-                                workers.userprefs.onmessage = function (event) {
-                                    app().storage.data = JSON.parse(event.data);
-                                    callback.call();
-                                };
-                            }
-                        };
-                    }
-                    return $.ajax({
-                        url: "/admin/users/prefs",
-                        dataType: "json",
-                        success: function (data) {
-                            self.data = data;
-                        },
-                        error: function (xhr, status, msg) {
-                            app().Warning(xhr.responseText, msg);
-                        }
-                    });
-                }
-            };
+            
             app().storage.load().done(function () {
-                if (app().initialized)
-                    return;
                 app().init();
                 app().run();
             });
+
 
         } catch (e) {
             console.log(e);

@@ -43,29 +43,11 @@
 
 (function (/*object*/ $, /*object*/window, /*undefined*/undefined) {
 
+    window.workers = {};
+
     var Application,
             extend = $.extend,
             kendo = window.kendo,
-            kendoVersion = "2018.2.620",
-            storage = {
-                data: {},
-                getItem: function (key) {
-                    return this.data[key];
-                },
-                setItem: function (key, value) {
-                    this.data[key] = value;
-                },
-                removeItem: function (key) {
-                    delete this.data[key];
-                },
-                load: function () {
-                    return {
-                        dane: function(cb) {
-                            cb.call();
-                        }
-                    }
-                }
-            },
             doc = window.document,
             keysOf = Object.keys,
             animation = {
@@ -79,22 +61,17 @@
                 }
             },
             supports = {
-                storage: (function () {
-                    try {
-                        storage.setItem("kendo-test", "success!");
-                        storage.removeItem("kendo-test");
-                        return !!storage.getItem;
-                    } catch (e) {
-                        return false;
-                    }
-                })(),
                 pushState: ("pushState" in window.history)
             };
     /**
      * Default ajax config
      */
+
     var ajaxSetup = {
         cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         onError: function (message, title) {
             try {
                 var m = JSON.parse(message);
@@ -152,7 +129,7 @@
         }
     };
     var ajaxSetupSilent = {
-        onError: function () {            
+        onError: function () {
         },
         statusCode: {
             401: function (e) {},
@@ -176,7 +153,53 @@
         /**
          * @param object storage
          */
-        storage: storage,
+        storage: {
+            data: {},
+            setItem: function (key, value) {
+                this.data[key] = value;
+                return $.ajax({
+                    url: "/admin/users/prefs",
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefs: kendo.stringify(Application.storage.data) },
+                    success: function (data) {
+                        Application.storage.data = data;
+                    },
+                    error: function (xhr, status, msg) {
+                        Application.Warning(xhr.responseText, msg);
+                    }
+                });
+            },
+            getItem: function (key) {
+                return this.data[key];
+            },
+            clear: function () {
+                return $.ajax({
+                    url: "/admin/users/prefs",
+                    type: "POST",
+                    dataType: "json",
+                    data: { prefs: "{}" },
+                    success: function () {
+                        Application.storage.data = {};
+                    },
+                    error: function (xhr, status, msg) {
+                        Application.Warning(xhr.responseText, msg);
+                    }
+                });
+            },
+            load: function () {
+                return $.ajax({
+                    url: "/admin/users/prefs",
+                    dataType: "json",
+                    success: function (data) {
+                        Application.storage.data = data;
+                    },
+                    error: function (xhr, status, msg) {
+                        Application.Warning(xhr.responseText, msg);
+                    }
+                });
+            }
+        },
         /**
          * @param object
          */
@@ -1072,10 +1095,8 @@
                             });
                             var cmConfig = [];
                             cmConfig.push({text: "Close", cssClass: "cm-close"});
-                            if (Application.storage.getItem) {
-                                cmConfig.push({text: "Create shortcut", cssClass: "cm-create-shortcut"});
-                                cmConfig.push({text: "Remove shortcut", cssClass: "cm-remove-shortcut"});
-                            }
+                            cmConfig.push({text: "Create shortcut", cssClass: "cm-create-shortcut"});
+                            cmConfig.push({text: "Remove shortcut", cssClass: "cm-remove-shortcut"});
                             menu.data("kendoContextMenu").append(cmConfig);
                         }
                     }
@@ -2298,8 +2319,18 @@
                     Application.ui.state.save(e, "open");
                 },
                 windowResize: function (e) {
-                    Application.ui.state.save(e, "resize");
+                    if (this.windowResizing) {
+                        return;
+                    }
+                    this.windowResizing = true;
+                    var promise = Application.ui.state.save(e, "resize");
                     resizeGrid(e.sender.element.find("[id^=grid-]"));
+                    if (promise) {
+                        return promise.done(function () {
+                            this.windowResizing = false;
+                        });
+                    }
+                    this.windowResizing = false;
                 },
                 windowMove: function (e) {
                     Application.ui.state.save(e, "move");
@@ -2380,12 +2411,13 @@
                                 break;
                         }
                         var serialized = JSON.stringify(Application.ui.state.controllers);
-                        Application.storage.setItem('controllers', serialized);
+                        var done = Application.storage.setItem('controllers', serialized);
                         e.sender.element.trigger("windowstatechanged");
+                        return done;
                     }
                 }
             },
-            changeCulture: function (culture) {
+            changeCulture: function (culture, then) {
                 if (Application.ui.culture === culture) {
                     return;
                 }
@@ -2394,6 +2426,8 @@
                         $("head script.culture").attr("src", url);
                         Application.ui.culture = culture;
                         kendo.culture(culture);
+                        if ($.isFunction(then))
+                            then.call();
                     };
                     $.ajaxSetup(ajaxSetupSilent);
                     var url = "/js/cultures/kendo.culture." + culture + ".min.js";
@@ -2403,7 +2437,8 @@
                     }).fail(function (jqxhr, settings, exception) {
                         $.ajaxSetup(ajaxSetup);
                         if (jqxhr.readyState !== 0) {
-                            url = "http://kendo.cdn.telerik.com/" + kendoVersion + url;
+                            if (Application.kendoVersion)
+                                url = "http://kendo.cdn.telerik.com/" + Application.kendoVersion + url;
                             $.getScript(url).done(function () {
                                 done(url);
                             }).fail(function (jqxhr, settings, exception) {
@@ -2416,10 +2451,7 @@
                         }
                     });
                 };
-                var result = Application.storage.setItem("kendoCulture", culture);
-                if (result && result.done)
-                    return result.done(after);
-                after.call();
+                Application.storage.setItem("kendoCulture", culture).done(after);
             },
             changeLanguage: function (language, then) {
                 if (Application.ui.language === language) {
@@ -2447,7 +2479,8 @@
                     }).fail(function (jqxhr, settings, exception) {
                         $.ajaxSetup(ajaxSetup);
                         if (jqxhr.readyState !== 0) {
-                            url = "http://kendo.cdn.telerik.com/" + kendoVersion + url;
+                            if (Application.kendoVersion)
+                                url = "http://kendo.cdn.telerik.com/" + Application.kendoVersion + url;
                             $.getScript(url).done(function () {
                                 done(url);
                             }).fail(function (jqxhr, settings, exception) {
@@ -2460,10 +2493,7 @@
                         }
                     });
                 };
-                var result = Application.storage.setItem("kendoLanguage", language);
-                if (result && result.done)
-                    return result.done(after);
-                after.call();
+                Application.storage.setItem("kendoLanguage", language).done(after);
             },
             changeBackgroundColor: function (color) {
                 Application.storage.setItem("kendoBackgroundColor", color);

@@ -543,9 +543,6 @@
             dragend: app().ui.state.windowMove,
             close: app().ui.state.windowClose,
             open: app().ui.state.windowOpen,
-            activate: function (e) {
-                var self = this;
-            },
             controllerName: $ctrl.name
         }).data("kendoWindow");
 
@@ -563,9 +560,14 @@
         $("#kendo-culture", $ctrl.window.element).kendoDropDownList({
             change: function () {
                 var selected = this.dataItem().value;
-                app().ui.changeCulture(selected);
+                app().ui.changeCulture(selected, function() {
+                    if (!confirm("Culture changed to " + selected + "\nDo you wanto to reload the interface ?")) {
+                        kendo.ui.progress($("body"), false);
+                        return;
+                    }
+                    window.location = '/admin';
+                });
                 kendo.ui.progress($("body"), true);
-                window.location = '/admin';
             }
         });
         $("#kendo-culture", $ctrl.window.element).data("kendoDropDownList").value(app().ui.culture);
@@ -574,6 +576,10 @@
             change: function () {
                 var selected = this.dataItem().value;
                 app().ui.changeLanguage(selected, function() {
+                    if (!confirm("Language changed to " + selected + "\nDo you wanto to reload the interface ?")) {
+                        kendo.ui.progress($("body"), false);
+                        return;
+                    }
                     window.location = '/admin';
                 });
                 kendo.ui.progress($("body"), true);
@@ -637,15 +643,13 @@
             $("#save-state", $ctrl.window.element).attr("checked", "checked");
 
         $("#save-state", $ctrl.window.element).click(function () {
-            if (app().storage.setItem)
-                app().storage.setItem("savestate", this.checked ? 1 : 0);
+            app().storage.setItem("savestate", this.checked ? 1 : 0);
         });
 
         $("#clear-storage", $ctrl.window.element).click(function () {
             if (!confirm("Do you really want to clear all user preferences stored ?"))
                 return;
-            if (app().storage.clear)
-                app().storage.clear();
+            app().storage.clear();
         });
 
         app().tabstrip(".tabstrip", $ctrl.window.element);
