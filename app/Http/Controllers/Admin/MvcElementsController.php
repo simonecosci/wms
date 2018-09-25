@@ -28,7 +28,7 @@ class MvcElementsController extends CrudController {
 
     public function createModel(Request $request) {
         if (!$request->has('model'))
-            return abort(400, "Missing aparameters");
+            return abort(400, "Missing a parameters");
         $model = json_decode($request->model);
         $hasMany = [];
         $belongsTo = [];
