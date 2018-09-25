@@ -17,7 +17,7 @@ class MvcElementsController extends CrudController {
 
     public function createMigration(Request $request) {
         if (!$request->has('model'))
-            return abort(400, "Missing aparameters");
+            return abort(400, "Missing a parameter");
         $model = json_decode($request->model);
         $code = view('admin.templates.migration', ['element' => $model])->render();
         $path = base_path('database/migrations') . DIRECTORY_SEPARATOR .
