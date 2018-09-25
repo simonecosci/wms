@@ -7,6 +7,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Validator;
 use App;
 
 abstract class CrudController extends Controller {
@@ -77,7 +78,9 @@ abstract class CrudController extends Controller {
         }
         $models = json_decode($request->input("models"), JSON_OBJECT_AS_ARRAY);
         foreach ($models as $k => $data) {
-            $models[$k] = $this->getModel()->create($data);
+            if (!Validator::make($data, $this->rules())->fails()) {
+                $models[$k] = $this->getModel()->create($data);
+            }
         }
         if ($this->reopenOnSave){
             return response("id=" . array_pop($models)->id)
@@ -98,10 +101,12 @@ abstract class CrudController extends Controller {
         }
         $models = json_decode($request->input("models"), JSON_OBJECT_AS_ARRAY);
         foreach ($models as $k => $data) {
-            $model      = $this->getModel();
-            $pk         = $model->getPrimaryKey();
-            $models[$k] = $model->find($data[$pk]);
-            $models[$k]->update($data);
+            if (!Validator::make($data, $this->rules())->fails()) {
+                $model      = $this->getModel();
+                $pk         = $model->getPrimaryKey();
+                $models[$k] = $model->find($data[$pk]);
+                $models[$k]->update($data);
+            }
         }
         if ($this->reopenOnSave && isset($data['id'])){
             return response("id=" . $data['id'])
@@ -153,5 +158,9 @@ abstract class CrudController extends Controller {
     public function getModel(array $data = array()) {
         return App::make(get_class($this->model))->fill($data);
     }
-
+    
+    
+    public function rules() {
+        return [];
+    }
 }
