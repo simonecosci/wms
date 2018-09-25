@@ -105,6 +105,12 @@
                 message += "The resource you are trying to reach seems to be unavailable.";
                 Application.Warning(message, title);
             },
+            422: function (e) {
+                var title = "An Error Occurred";
+                var message = "<h1>Warning,</h1>Your request can't be processed.<br>";
+                message += e.message;
+                Application.Warning(message, title);
+            },
             500: function (e) {
                 var re = {
                     MYSQL_DUPLICATE_ENTRY: /SQLSTATE\[23000\]/
@@ -3368,5 +3374,3 @@
     });
 
 })(jQuery, window);
-
-    

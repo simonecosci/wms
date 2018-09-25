@@ -12,5 +12,15 @@ class {{ $element->controller->name }} extends CrudController {
     public function __construct({{ $element->model->name }} $model) {
         $this->model = $model;
     }
+@if (!empty($validators))   
     
+    public function rules() {
+        return [
+@foreach($validators as $name => $validator)
+            '{{ $name }}' => '{{ $validator }}',
+
+@endforeach
+        ];
+    }
+@endif
 }

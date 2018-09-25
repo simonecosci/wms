@@ -76,7 +76,17 @@ class MvcElementsController extends CrudController {
         if (!$request->has('model'))
             return abort(400, "Missing aparameters");
         $model = json_decode($request->model);
-        $code = view('admin.templates.controller', ['element' => $model])->render();
+        $validators = [];
+        foreach ($model->model->fields as $field) {
+            if (empty($field->validator)) {
+                continue;
+            }
+            $validators[$field] = $field->validator;
+        }
+        $code = view('admin.templates.controller', [
+            'element' => $model,
+            'validators' => $validators
+                ])->render();
         $path = app_path('Http/Controllers/Admin') . DIRECTORY_SEPARATOR .
                 $model->controller->name . '.php';
         File::put($path, '<?php' . PHP_EOL . $code);

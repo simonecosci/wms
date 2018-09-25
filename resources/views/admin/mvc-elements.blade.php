@@ -186,10 +186,18 @@
             </tr>
             <tr>
                 <th>
-                    <label for="default">Default</label>
+                    <label for="default">Default (surround with "" if is a string)</label>
                 </th>
                 <td>
                     <input type="text" class="k-textbox" name="default" data-bind="value:default">
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label for="validators">Validators (Separate'em with | (Pipe))</label>
+                </th>
+                <td>
+                    <input type="text" class="k-textbox" name="validators" data-bind="value:validators">
                 </td>
             </tr>
         </table>
@@ -893,6 +901,12 @@
                                 },
                                 default: {
                                     defaultValue: "text",
+                                    validation: {
+                                        required: false,
+                                        nullable: true
+                                    }
+                                },
+                                validators: {
                                     validation: {
                                         required: false,
                                         nullable: true
