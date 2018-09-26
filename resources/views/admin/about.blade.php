@@ -12,8 +12,8 @@
         <div class="k-content">
             PHP <span id="php-version"></span><br>
             Kendo <span id="kendo-version"></span><br>
-            HOST IP <?php echo ($_SERVER['SERVER_ADDR']; ?? '') ?><br>
-            CLIENT IP <?php echo ($_SERVER['REMOTE_ADDR']; ?? '') ?><br>
+            HOST IP <?php echo ($_SERVER['SERVER_ADDR'] ?? '') ?><br>
+            CLIENT IP <?php echo ($_SERVER['REMOTE_ADDR'] ?? '') ?><br>
             Path <?php echo @getcwd(); ?><br>
             Debug <?php echo config('app.debug') ? 'On' : 'Off'; ?><br>
         </div>
