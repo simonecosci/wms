@@ -55,8 +55,14 @@ run the migrations with seed
 ```
 php artisan migrate:fresh --seed
 ```
+You can now run the web server
 
-Configure a virtualhost in your web server config
+```
+php artisan serve
+```
+
+or configure a virtualhost in your web server config
+
 ```
 <VirtualHost *:80>
 	ServerName localhost
