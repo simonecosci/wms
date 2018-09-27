@@ -900,7 +900,6 @@
                                     defaultValue: false
                                 },
                                 default: {
-                                    defaultValue: "text",
                                     validation: {
                                         required: false,
                                         nullable: true
