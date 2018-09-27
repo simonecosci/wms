@@ -3207,7 +3207,7 @@
             }
         },
         Warning: function (msg, title, callback) {
-            var html = '<div class="k-state-error"><blockquote>'
+            var html = '<div class="k-state-error"><blockquote style="max-height: 500px; min-height: 200px; overflow: auto;">'
                     + msg
                     + '</blockquote></div><div class="k-block" style="text-align: center"><button class="k-button">Close</button>';
             var ew = $("<div></div>").html(html).css({
