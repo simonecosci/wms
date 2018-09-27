@@ -29,12 +29,6 @@ abstract class CrudController extends Controller {
     protected $model;
     
     /**
-     *
-     * @var boolean
-     */
-    protected $reopenOnSave = false;
-
-    /**
      * 
      * @param Request $request
      * @return \Illuminate\View\View|\Illuminate\Contracts\View 
@@ -82,10 +76,6 @@ abstract class CrudController extends Controller {
                 $models[$k] = $this->getModel()->create($data);
             }
         }
-        if ($this->reopenOnSave){
-            return response("id=" . array_pop($models)->id)
-                    ->header("Content-Type", 'text/plain');
-        }
         return $models;
     }
 
@@ -107,10 +97,6 @@ abstract class CrudController extends Controller {
                 $models[$k] = $model->find($data[$pk]);
                 $models[$k]->update($data);
             }
-        }
-        if ($this->reopenOnSave && isset($data['id'])){
-            return response("id=" . $data['id'])
-                    ->header("Content-Type", 'text/html');
         }
         return $models;
     }

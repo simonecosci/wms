@@ -167,7 +167,7 @@
                     url: "/admin/users/prefs",
                     type: "POST",
                     dataType: "json",
-                    data: { prefs: kendo.stringify(Application.storage.data) },
+                    data: {prefs: kendo.stringify(Application.storage.data)},
                     success: function (data) {
                         Application.storage.data = data;
                     },
@@ -184,7 +184,7 @@
                     url: "/admin/users/prefs",
                     type: "POST",
                     dataType: "json",
-                    data: { prefs: "{}" },
+                    data: {prefs: "{}"},
                     success: function () {
                         Application.storage.data = {};
                     },
@@ -668,6 +668,32 @@
                     destroy: true
                 };
                 $.extend(true, this.acl, options.acl);
+                
+                if (this.reopenOnSave) {
+                    this.recordCreated = function (e) {
+                        var id = e.responseJSON[0].id;;
+                        if ($ctrl.pageable) {
+                            setTimeout(function () {
+                                $ctrl.edit(id);
+                            }, 1000);
+                        } else {
+                            var requestEnd = $ctrl.grid.dataSource.options.requestEnd;
+                            $ctrl.grid.dataSource.bind("requestEnd", function (e) {
+                                if (e.type === "read") {
+                                    $ctrl.grid.one("dataBound", function () {
+                                        var model = $ctrl.grid.dataSource.get(id);
+                                        var row = $ctrl.grid.element.find("tr[data-uid='" + model.uid + "']");
+                                        $ctrl.grid.dataSource.unbind("requestEnd");
+                                        setTimeout(function () {
+                                            $ctrl.grid.editRow(row);
+                                            $ctrl.grid.dataSource.bind("requestEnd", requestEnd);
+                                        }, 1000);
+                                    });
+                                }
+                            });
+                        }
+                    };
+                }
 
                 this.pageSize = (options.pageSize || 50);
                 this.transport = Application.ui.getDefaultTransport(this);
@@ -749,6 +775,7 @@
                         total: "total"
                     });
                 }
+
                 this.dataSourceOptions = {
                     controller: this,
                     batch: true,
@@ -2653,7 +2680,8 @@
                     create: {
                         url: Application.service.url + "/" + $ctrl.path + "/create",
                         dataType: "json",
-                        type: "POST"
+                        type: "POST",
+                        complete: $ctrl.reopenOnSave ? $ctrl.recordCreated : function() {}
                     }
                 };
             },

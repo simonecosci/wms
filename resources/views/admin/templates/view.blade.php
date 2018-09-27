@@ -68,6 +68,10 @@
 <?php if ($element->view->pageable && $element->view->pageSize) : ?>
         this.pageSize = <?php echo $element->view->pageSize; ?>;
 <?php endif; ?>
+<?php if ($element->view->grid->reopenOnSave) : ?>
+        this.reopenOnSave = true;
+<?php endif; ?>
+    
         var $ctrl = this;
         var fields = {
 <?php foreach ($element->model->fields as $field) : ?>
