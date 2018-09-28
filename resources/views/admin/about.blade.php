@@ -1,6 +1,6 @@
 <div id="window-about">
     <div class="k-block" style="padding: 10px; text-align: center;">
-        <h1>{{ config('app.name') }}</h1>
+        <figure style="text-align: center"><img src="/images/logo_wms.svg"></figure>
         <h2>{{ config('app.description') }}</h2>
         <a href="https://github.com/simonecosci/wms" target="_blank">Visit the Application's page on Github</a>
         <h3>
@@ -25,7 +25,7 @@
         this.stackOnOpen = false;
         this.window = $("#window-about").kendoWindow({
             actions: ["Close"],
-            height: "400px",
+            height: "425px",
             width: "600px",
             title: "About",
             visible: false,
