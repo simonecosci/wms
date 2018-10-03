@@ -17,9 +17,9 @@ class CreateMvcElementsTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name', 128);
-            $table->json('model')->nullable();
-            $table->json('view')->nullable();
-            $table->json('controller')->nullable();
+            $table->text('model')->nullable();
+            $table->text('view')->nullable();
+            $table->text('controller')->nullable();
             $table->timestamps();
         });
     }
