@@ -1038,7 +1038,8 @@
                     this.showDetails = function (e) {
                         e.preventDefault();
                         var row = $(e.currentTarget).closest("tr");
-                        var dataItem = $ctrl.grid.dataItem(row);
+                        var grid = Object.keys($ctrl.grid).length > 0 ? $ctrl.grid : $(e.currentTarget).closest("[data-role=grid]").data("kendoGrid");
+                        var dataItem = grid.dataItem(row);
                         $ctrl.view(dataItem);
                     };
                 }
@@ -3356,6 +3357,8 @@
     Application.ui.backgroundColor = "#ccc";
 
     function resizeGrid(gridElement) {
+        if (!gridElement)
+            return;
         var dataArea = gridElement.find(".k-grid-content"),
                 gridHeight = gridElement.innerHeight(),
                 otherElements = gridElement.children().not(".k-grid-content"),
