@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Common\CrudController;
 use App\Models\MvcElement;
 
@@ -24,6 +25,11 @@ class MvcElementsController extends CrudController {
                 date('Y_m_d_his_') . 'create_' . $model->model->table . '_table.php';
         File::put($path, '<?php' . PHP_EOL . $code);
         return $code;
+    }
+    
+    public function runMigration(Request $request) {
+        Artisan::call('migrate');
+        return '';
     }
 
     public function createModel(Request $request) {
