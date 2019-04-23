@@ -126,7 +126,6 @@
                     self.element.find("#image-selection [name=name]").val(selected.name);
                     self.element.find("#image-selection [name=size]").val(selected.size);
                 });
-
                 imageBrowser.bind("apply", function (e) {
                     var selected = e.sender._selectedItem();
                     var url = "/storage/" + imageBrowser._path + selected.name;
@@ -140,6 +139,7 @@
                         }
                     }).data("kendoWindow").center().open();
                 });
+                imageBrowser.element.find(".k-listview").css("overflow", "auto");
 
                 var fileBrowser = $("#file-browser", this.element).kendoFileBrowser({
                     transport: {
@@ -188,6 +188,7 @@
                     self.element.find("#file-selection [name=name]").val(selected.name);
                     self.element.find("#file-selection [name=size]").val(selected.size);
                 });
+                fileBrowser.element.find(".k-listview").css("overflow", "auto");
             },
             controllerName: $ctrl.name
         }).data("kendoWindow");

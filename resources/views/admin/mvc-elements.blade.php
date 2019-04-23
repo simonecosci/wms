@@ -529,6 +529,7 @@
                             <div>
                                 <label for="createMigration">Create The Migration Code</label>
                                 <button type="button" id="createMigration">Create Migration</button>
+                                <button type="button" id="runMigration" style="display:none">Run Migration</button>
                             </div>
                             <div>
                                 <label for="createModel">Create The Model Code</label>
@@ -718,6 +719,7 @@
                             success: function (code) {
                                 app().Alert("Migration created and placed in\ndatabase/migrations/[date]_create_" + model.model.table + "_table.php<br>You can now run the migrate command");
                                 container.find("#result").text('<' + "?php\n" + code);
+                                container.find("#runMigration").show();
                             },
                             error: function (xhr, status, msg) {
                                 app().Warning(xhr.responseText, msg);
@@ -726,7 +728,24 @@
                         });
                     }
                 });
-                
+                container.find("#runMigration").kendoButton({
+                    click: function() {
+                        if (!confirm("Run the migration code ?")) {
+                            return;
+                        }
+                        $.ajax({
+                            url: app().service.url + "/" + $ctrl.path + "/run-migration",
+                            dataType: "text",
+                            success: function () {
+                                app().Alert("Migration done");
+                            },
+                            error: function (xhr, status, msg) {
+                                app().Warning(xhr.responseText, msg);
+                                console.log(xhr, status, msg);
+                            }
+                        });
+                    }
+                });                
                 container.find("#createModel").kendoButton({
                     click: function() {
                         if (!confirm("Create the Model code ?")) {

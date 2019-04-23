@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @abstract Base class for All CRUD Models
+ * @abstract Base class for AR CRUD Models
  */
 abstract class CrudModel extends Model {
 
@@ -16,7 +16,7 @@ abstract class CrudModel extends Model {
     ];
 
     /**
-     * ehere to place uploads
+     *
      * @var string
      */
     protected $uploadFolder;
@@ -39,9 +39,10 @@ abstract class CrudModel extends Model {
      * @return $this
      */
     public function update(array $attributes = [], array $options = []) {
-        if (!$this->exists)
+        if (!$this->exists) {
             return;
-        $this->fill($attributes)->save();
+        }
+        $this->fill($attributes)->save($options);
         return $this;
     }
 
@@ -81,7 +82,7 @@ abstract class CrudModel extends Model {
     }
 
     /**
-     * Recusively add conditions to arrays
+     * 
      * @param Builder $query
      * @param object $filters
      */
@@ -108,30 +109,22 @@ abstract class CrudModel extends Model {
         });
     }
 
-    /**
-     * if filed contains a dot add whereHas condition to the relation
-     * @param Builder $query
-     * @param object $filter
-     */
     protected function _applyFilter(Builder $query, $filter) {
         $exp = explode('.', $filter->field);
         if (count($exp) > 1) {
-            do {
-                $f = array_pop($exp);
-                $query->whereHas(implode('.', $exp), function($query) 
-                        use ($exp, $f, $filter) {
-                    $_filter = clone $filter;
-                    $_filter->field = $f;
-                    $this->_applyWhere($query, $_filter);
-                });
-            } while (count($exp) > 1);
+            $f = array_pop($exp);
+            $query->whereHas(implode('.', $exp), function($query) use ($exp, $f, $filter) {
+                $_filter = clone $filter;
+                $_filter->field = $f;
+                $this->_applyFilter($query, $_filter);
+            });
         } else {
             $this->_applyWhere($query, $filter);
         }
     }
 
     /**
-     * Translate strings to symbols
+     * 
      * @param QueryBuilder $query
      * @param object $filter
      */
@@ -162,10 +155,20 @@ abstract class CrudModel extends Model {
                 $query->where($filter->field, '>=', $filter->value);
                 break;
             case 'startswith':
-                $query->where($filter->field, 'LIKE', $filter->value . '%');
+                if (strpos($filter->field, '->') === false) {
+                    $query->where($filter->field, 'LIKE', $filter->value . '%');
+                } else {
+                    $f = explode('->', $filter->field);
+                    $query->whereRaw('JSON_SEARCH(' . $f[0] . '->"$.' . $f[1] . '", "all", "' . $filter->value . '%") IS NOT NULL');
+                }
                 break;
             case 'endswith':
-                $query->where($filter->field, 'LIKE', '%' . $filter->value);
+                if (strpos($filter->field, '->') === false) {
+                    $query->where($filter->field, 'LIKE', '%' . $filter->value);
+                } else {
+                    $f = explode('->', $filter->field);
+                    $query->whereRaw('JSON_SEARCH(' . $f[0] . '->"$.' . $f[1] . '", "all", "%' . $filter->value . '") IS NOT NULL');
+                }
                 break;
             case 'contains':
                 $query->where($filter->field, 'LIKE', '%' . $filter->value . '%');
@@ -183,7 +186,7 @@ abstract class CrudModel extends Model {
     }
 
     /**
-     * Recursively apply order by fields
+     * 
      * @param Builder $query
      * @param string $sort
      */
