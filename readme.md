@@ -1,6 +1,9 @@
 # WMS 
 ### Windowed Management System
 ## Laravel-KendoUI (Web Desktop-Like Application Environment)
+
+[![GitHub All Releases](https://img.shields.io/github/downloads/simonecosci/wms/total.svg)](https://packagist.org/packages/simonecosci/wms)
+
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/logo_wms.svg"></p>
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"><img src="https://telerikhelper.files.wordpress.com/2015/03/kendoui.png?w=440"></p>
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-1.jpg"></p>
@@ -24,7 +27,7 @@ npm install
 
 Via Composer
 ```
-composer create-project --stability=dev simonecosci/wms <install-directory>
+composer create-project simonecosci/wms <install-directory>
 cd <install-directory>
 npm install
 ```
