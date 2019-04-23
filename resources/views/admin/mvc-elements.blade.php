@@ -425,7 +425,7 @@
                             <label for="view_table">Database table name</label>
                         </th>
                         <td>
-                            <input placeholder="eg. MyItems" type="text" class="k-textbox" name="view_table" required="required" data-bind="value:model.table">
+                            <input placeholder="eg. my_items" type="text" class="k-textbox" name="view_table" required="required" data-bind="value:model.table">
                         </td>
                     </tr>
                     <tr>
