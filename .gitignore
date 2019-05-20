@@ -11,3 +11,8 @@ npm-debug.log
 yarn-error.log
 .env
 /nbproject
+resources/views/admin/countries.blade.php
+resources/views/admin/customers.blade.php
+resources/views/admin/orders-products.blade.php
+resources/views/admin/orders.blade.php
+resources/views/admin/products.blade.php
