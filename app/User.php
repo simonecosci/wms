@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Common\CrudModel;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -35,4 +36,19 @@ class User extends CrudModel implements
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function create(array $attributes = [], array $options = []) {
+        if (isset($attributes['new_password'])) {
+            $attributes['password'] = Hash::make($attributes['new_password']);
+        }
+        parent::create($attributes, $options);
+    }
+
+    public function update(array $attributes = [], array $options = []) {
+        if (isset($attributes['new_password'])) {
+            $attributes['password'] = Hash::make($attributes['new_password']);
+        }
+        parent::update($attributes, $options);
+    }
+
 }
