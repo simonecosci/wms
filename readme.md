@@ -6,7 +6,7 @@
 
 <p align="center"><img src="http://www.simonecosci.com/storage/app/media/logo_wms.svg"></p>
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"><img src="https://telerikhelper.files.wordpress.com/2015/03/kendoui.png?w=440"></p>
-<p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-1.jpg"></p>
+<p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-1.JPG"></p>
 
 ## About WMS
 
@@ -99,8 +99,8 @@ chmod -R 777 public/app
 
 ## To create your first window read the [Wiki](https://github.com/simonecosci/wms/wiki)
 
-<p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-2.jpg"></p>
-<p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-3.jpg"></p>
+<p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-2.JPG"></p>
+<p align="center"><img src="http://www.simonecosci.com/storage/app/media/SS-3.JPG"></p>
 
 
 ## Licenses
