@@ -1380,9 +1380,11 @@
             Application.createWidgets(controllerName, container, model);
             var ctrl = Application.controllers[controllerName];
             var content = ctrl.grid.element.find("div.k-grid-content");
-            ctrl.scrollTop = content[0].scrollTop;
-            ctrl.scrollLeft = content[0].scrollLeft;
-            ctrl.lastEdited = model.id;
+            if (content.length > 0) {
+                ctrl.scrollTop = content[0].scrollTop;
+                ctrl.scrollLeft = content[0].scrollLeft;
+                ctrl.lastEdited = model.id;
+            }
             var onEdit = ctrl.onEdit;
             if ($.isFunction(onEdit)) {
                 onEdit.call(ctrl, container, model);
