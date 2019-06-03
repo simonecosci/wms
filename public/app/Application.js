@@ -671,6 +671,8 @@
                 
                 if (this.reopenOnSave) {
                     this.recordCreated = function (e) {
+                        if (!e.responseJSON || !e.responseJSON[0])
+                            return;
                         var id = e.responseJSON[0].id;;
                         if ($ctrl.pageable) {
                             setTimeout(function () {
@@ -805,16 +807,29 @@
                     e.preventDefault();
                     if (e.type) {
                         if (e.type === "update" && !e.response.Errors) {
-                            Application.notification.show("Record successfully updated", "success");
+                            app().notification.show("Record successfully updated", "success");
                         }
                         if (e.type === "create" && !e.response.Errors) {
-                            Application.notification.show("Record successfully created", "success");
+                            app().notification.show("Record successfully created", "success");
                         }
                         if (e.type === "destroy" && !e.response.Errors) {
-                            Application.notification.show("Record successfully deleted", "success");
+                            app().notification.show("Record successfully deleted", "success");
                         }
                         if (e.type !== "read") {
                             e.sender.read();
+                        } else {
+                            if ($ctrl.lastEdited) {
+                                var self = this;
+                                setTimeout(function(){
+                                    var content = $ctrl.grid.element.find("div.k-grid-content");
+                                    content.scrollTop($ctrl.scrollTop);
+                                    content.scrollLeft($ctrl.scrollLeft);
+                                    var model = self.get($ctrl.lastEdited);
+                                    if (model) {
+                                        $ctrl.grid.select($ctrl.grid.element.find("tr[data-uid=" + model.uid + "]") || 0);
+                                    }
+                                }, 1000);
+                            }
                         }
                     }
                     if (e.response && e.response.Errors) {
@@ -1364,6 +1379,10 @@
         onEdit: function (controllerName, container, model) {
             Application.createWidgets(controllerName, container, model);
             var ctrl = Application.controllers[controllerName];
+            var content = ctrl.grid.element.find("div.k-grid-content");
+            ctrl.scrollTop = content[0].scrollTop;
+            ctrl.scrollLeft = content[0].scrollLeft;
+            ctrl.lastEdited = model.id;
             var onEdit = ctrl.onEdit;
             if ($.isFunction(onEdit)) {
                 onEdit.call(ctrl, container, model);
@@ -2373,13 +2392,14 @@
                     Application.ui.state.save(e, "close");
                 },
                 save: function (e, op) {
-                    isMaximized = false;
+                    var isMaximized = false;
+                    var isMinimized = false;
                     if (!e || !e.sender) {
                         return;
                     }
                     if (e.sender.wrapper) {
-                        var isMaximized = e.sender.wrapper.hasClass("k-window-maximized");
-                        var isMinimized = e.sender.element.data("kendoWindow").options.isMinimized;
+                        isMaximized = e.sender.wrapper.hasClass("k-window-maximized");
+                        isMinimized = e.sender.element.data("kendoWindow").options.isMinimized;
                         if (isMaximized) {
                             $("#menu-sensor").css({
                                 zIndex: Application.ui.getMaxZIndex() + 1
