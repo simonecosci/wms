@@ -4,6 +4,7 @@ namespace App\Models\Common;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @abstract Base class for AR CRUD Models
@@ -159,7 +160,12 @@ abstract class CrudModel extends Model {
                     $query->where($filter->field, 'LIKE', $filter->value . '%');
                 } else {
                     $f = explode('->', $filter->field);
-                    $query->whereRaw('JSON_SEARCH(' . $f[0] . '->"$.' . $f[1] . '", "all", "' . $filter->value . '%") IS NOT NULL');
+                    $f = array_map(function($el) {
+                        return DB::connection()->getPdo()->quote($el);
+                    }, $f);
+                    $query->whereRaw('JSON_SEARCH(' . $f[0] . '->"$.' . $f[1] . '", "all", "' . DB::connection()
+                        ->getPdo()
+                        ->quote($filter->value) . '%") IS NOT NULL');
                 }
                 break;
             case 'endswith':
@@ -167,14 +173,39 @@ abstract class CrudModel extends Model {
                     $query->where($filter->field, 'LIKE', '%' . $filter->value);
                 } else {
                     $f = explode('->', $filter->field);
-                    $query->whereRaw('JSON_SEARCH(' . $f[0] . '->"$.' . $f[1] . '", "all", "%' . $filter->value . '") IS NOT NULL');
+                    $f = array_map(function($el) {
+                        return DB::connection()->getPdo()->quote($el);
+                    }, $f);
+                    $query->whereRaw('JSON_SEARCH(' . $f[0] . '->"$.' . $f[1] . '", "all", "%' . DB::connection()
+                        ->getPdo()
+                        ->quote($filter->value) . '") IS NOT NULL');
                 }
                 break;
             case 'contains':
-                $query->where($filter->field, 'LIKE', '%' . $filter->value . '%');
+                if (strpos($filter->field, '->') === false) {
+                    $query->where($filter->field, 'LIKE', '%' . $filter->value . '%');
+                } else {
+                    $f = explode('->', $filter->field);
+                    $f = array_map(function($el) {
+                        return DB::connection()->getPdo()->quote($el);
+                    }, $f);
+                    $query->whereRaw('JSON_CONTAINS(' . $f[0] . '->"$.' . $f[1] . '", "all", "' . DB::connection()
+                        ->getPdo()
+                        ->quote($filter->value) . '") IS NOT NULL');
+                }
                 break;
             case 'doesnotcontain':
-                $query->where($filter->field, 'NOT LIKE', '%' . $filter->value . '%');
+                if (strpos($filter->field, '->') === false) {
+                    $query->where($filter->field, 'NOT LIKE', '%' . $filter->value . '%');
+                } else {
+                    $f = explode('->', $filter->field);
+                    $f = array_map(function($el) {
+                        return DB::connection()->getPdo()->quote($el);
+                    }, $f);
+                    $query->whereRaw('JSON_CONTAINS(' . $f[0] . '->"$.' . $f[1] . '", "all", "' . DB::connection()
+                        ->getPdo()
+                        ->quote($filter->value) . '") IS NULL');
+                }
                 break;
             case 'isempty':
                 $query->where($filter->field, '=', '');
