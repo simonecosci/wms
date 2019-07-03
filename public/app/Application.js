@@ -3007,9 +3007,11 @@
                 Application.shortcuts.load();
 
                 var ss = parseInt(Application.storage.getItem("savestate"));
-                if (ss === 0)
+                if (ss === 0) {
+                    $("body").css("visibility", "visible");
+                    $(Application).trigger("ready");
                     return;
-
+                }
                 var cstr = Application.storage.getItem('controllers') || "{}";
                 var controllers = JSON.parse(cstr);
                 for (var cn in controllers) {
