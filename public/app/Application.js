@@ -468,7 +468,9 @@
                 var editableWindow;
                 var self = this;
 
-                var cf = $.extend({}, (this.grid.dataSource.filter() || {}));
+                var cf = {};
+                if (this.grid.dataSource)
+                    cf = $.extend({}, (this.grid.dataSource.filter() || {}));
                 if (self.grid.options.editor)
                     editableWindow = self.grid.options.editor.editable.window;
                 if (self.grid.options.editable)
