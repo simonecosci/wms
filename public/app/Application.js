@@ -882,17 +882,8 @@
                                     var _page = typeof dataSource !== "undefined" && dataSource.page ? dataSource.page : ctrl.grid.dataSource.page();
                                     var _pageSize = typeof dataSource !== "undefined" && dataSource.pageSize ? dataSource.pageSize : ctrl.grid.dataSource.pageSize();
 
-                                    if (dataSourceType === "DataSource") {
-                                        var _aggregate = typeof dataSource !== "undefined" && dataSource.aggregate ? dataSource.aggregate : ctrl.grid.dataSource.aggregate();
-                                        var _group = typeof dataSource !== "undefined" && dataSource.group ? dataSource.group : ctrl.grid.dataSource.group();
-                                    }
-
                                     var sort = $.isArray(_sort) ? _sort.slice() : $.extend(true, {}, _sort);
                                     var filter = $.extend(true, {}, _filter);
-                                    if (_group)
-                                        var group = $.isArray(_group) ? _group.slice() : $.extend(true, {}, _group);
-                                    if (_aggregate)
-                                        var aggregate = $.extend(true, {}, _aggregate);
 
                                     ctrl.initial = {
                                         filter: filter,
@@ -901,6 +892,10 @@
                                         pageSize: _pageSize
                                     };
                                     if (dataSourceType === "DataSource") {
+                                        var _aggregate = typeof dataSource !== "undefined" && dataSource.aggregate ? dataSource.aggregate : ctrl.grid.dataSource.aggregate();
+                                        var _group = typeof dataSource !== "undefined" && dataSource.group ? dataSource.group : ctrl.grid.dataSource.group();
+                                        var group = $.isArray(_group) ? _group.slice() : $.extend(true, {}, _group);
+                                        var aggregate = $.extend(true, {}, _aggregate);
                                         ctrl.initial.aggreagte = aggregate;
                                         ctrl.initial.group = group;
                                     }
