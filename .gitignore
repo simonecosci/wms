@@ -16,3 +16,8 @@ resources/views/admin/customers.blade.php
 resources/views/admin/orders-products.blade.php
 resources/views/admin/orders.blade.php
 resources/views/admin/products.blade.php
+.vs/wms/config/applicationhost.config
+.vs/ProjectSettings.json
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
+.vs/wms/v16/.suo
